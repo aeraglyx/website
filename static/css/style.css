@@ -1,0 +1,226 @@
+@font-face {
+    font-family: "Cascadia Mono";
+    /* src: url("../fonts/CascadiaMono-VariableFont_wght.ttf") format("truetype"); */
+    src: url("../fonts/CaskaydiaMonoNerdFont-SemiBold.ttf") format("truetype");
+    /* src: url("../fonts/CascadiaMono.woff2") format("truetype"); */
+    font-style: normal;
+    font-display: swap
+}
+
+:root {
+    --color-deep: #1c1c1c;
+    --color-bg: #202020;
+    --color-bg-2: #292929;
+    --color-smol: #383838;
+    --color-dim: #525252;
+    --color-meh: #888888;
+    --color-fg: #c8c8c8;
+    --color-blue: #96c6dd;
+    --color-purp: #bcb8e2;
+}
+
+* {
+    font-family: "Cascadia Mono";
+    box-sizing: border-box;
+    /* font-weight: 500; */
+}
+
+/* html { */
+/* } */
+
+body {
+    background-color: var(--color-bg);
+    color: var(--color-fg);
+    margin: 0;
+}
+
+.container {
+    margin-bottom: 100px;
+}
+
+.column {
+    margin: auto;
+    max-width: 700px;
+    padding: 0px 80px;
+    box-sizing: content-box;
+}
+
+p,
+ul,
+pre {
+    margin-top: 1.75rem;
+    margin-bottom: 0;
+    line-height: 1.6;
+}
+
+blockquote {
+    margin: 0;
+    margin-top: 1.6em;
+    padding: 1em 1.5em;
+    background-color: var(--color-bg-2);
+    border-radius: .75em;
+    border-left: solid 5px var(--color-dim);
+}
+
+blockquote p {
+    margin: 0;
+    text-box-trim: trim both;
+}
+
+.about {
+    border: solid 3px var(--color-smol);
+    border-radius: 1.0em;
+    box-shadow: 1em 1em var(--color-deep);
+    margin-top: 3em;
+    transition: box-shadow 500ms;
+}
+
+.about:hover {
+    box-shadow: 3em 3em var(--color-deep);
+}
+
+.about > p {
+    margin: 0;
+    padding: 2.5em 3em;
+}
+
+pre {
+    line-height: 1.25;
+    padding: 1em 1.5em;
+    border-radius: .75em;
+    background-color: var(--color-bg-2);
+    border: solid 3px var(--color-smol);
+}
+
+p > code,
+li > code {
+    padding: .125ch .5ch;
+    border-radius: .38em;
+    /* color: var(--color-purp); */
+    background-color: var(--color-bg-2);
+    border: 2px solid var(--color-dim);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-weight: 900;
+    color: var(--color-blue);
+    margin-bottom: 0;
+}
+
+h1 {
+    color: var(--color-blue);
+    margin-top: 2.5em;
+    text-align: center;
+}
+
+h2 {
+    margin-top: 4.5rem;
+    position: relative;
+}
+
+h3 {
+    margin-top: 3rem;
+    position: relative;
+}
+
+/* h2::before, h3::before { */
+/*     position: absolute; */
+/*     color: var(--color-smol); */
+/* } */
+/**/
+/* h2::before { */
+/*     content: "#"; */
+/*     left: -2ch; */
+/* } */
+/**/
+/* h3::before { */
+/*     content: "##"; */
+/*     left: -3ch; */
+/* } */
+
+.subtitle {
+    margin-top: .75em;
+    margin-bottom: 4.5em;
+    color: var(--color-dim);
+    text-align: center;
+}
+
+::marker {
+    color: var(--color-blue);
+    content: "\2B24  ";
+}
+
+nav ul {
+    /* list-style: none; */
+    padding: 0;
+    margin: 0;
+}
+
+nav > ul > li {
+    float: left;
+    margin-left: 1em;
+}
+
+nav > ul > li::marker {
+    content: "";
+}
+
+nav ul li a {
+    color: var(--color-fg);
+}
+
+nav > ul > li.active {
+    color: var(--color-bg);
+}
+
+/* nav > ul > li.active > a { */
+/*     color: var(--color-bg) */
+/* } */
+
+a {
+    color: inherit;
+    text-decoration: underline solid 3px var(--color-dim);
+    text-underline-offset: 3px;
+}
+
+a:hover,
+a:active {
+    text-decoration-color: var(--color-blue);
+}
+
+header {
+    font-size: 1.3em;
+    height: 5em;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+header a {
+    padding: .5em;
+    margin: -.5em;
+}
+
+header h1 {
+    font-size: inherit;
+    margin: 0;
+    color: var(--color-fg);
+}
+
+footer {
+    height: 5em;
+    margin-top: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-dim);
+}
+
+footer p {
+    margin: 0;
+}

@@ -1,0 +1,12 @@
+base_url = "https://aeraglyx.com"
+
+taxonomies = [
+    { name = "tags", feed = true, render = false},
+]
+
+[extra]
+nav = [
+    { name = "blog", url = "/blog/" },
+    { name = "work", url = "/blog/" },
+    { name = "links", url = "/blog/" },
+]
