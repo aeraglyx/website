@@ -4,6 +4,7 @@ date = 2025-11-11
 taxonomies.tags = ["vfx", "math"]
 +++
 
+
 When merging a grain-free element on top of a grainy footage, we match the grain and that's it, right? Well not quite, by mixing 2 uncorrelated grains, we get weaker grain in the edges. Let's figure out why and how to fix this.
 
 When we blend multiple noisy signals, the overall noise to signal ratio changes with `1 / sqrt(n)`, so for 2 signals, that is roughly 0.707. More generally, when combining two signals with different noise strengths, the resulting noise is:
@@ -34,4 +35,4 @@ If we want to apply the grain before the premult and merge, we simply divide it 
 
 `sqrt(x * (2 - x)) / x`
 
-However, note that this form shoots off to infinity as it approaches `a=0`.
+However, note that this form shoots off to infinity as it approaches `x=0`.

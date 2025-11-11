@@ -4,6 +4,7 @@ date = 2025-11-11
 taxonomies.tags = ["typing", "workflow"]
 +++
 
+
 A retrospection on my switch to a modified Gallium alternative keyboard layout for English and Czech typing.
 
 
@@ -24,9 +25,10 @@ So naturally, I wrote my own layout generator. Well, I made it a while back, but
 
 A Gallium-style layout seemed like a much better fit for my requirements than Colemak, so I tried modifying it for better Czech stats. Turns out, someone going by *Brys* on the *akl* Discord server already made a layout catered towards Czech called `corymbia-cz-eng`. Whatever I tried, my version was approaching something similar, so I kinda went with it.
 
-The plan was to keep iterating on it, but at this point I was already practicing the homerow on keybr. What gave me some peace of mind was comparing it to Colemak or QWERTY on [cyanophage](https://cyanophage.github.io/) using my own corpus. "Even if it's suboptimal, it will be a huge win", I thought. So I stuck with it.
+The plan was to keep iterating on it, but at this point I was already practicing the homerow on [keybr](https://www.keybr.com/). What gave me some peace of mind was comparing it to Colemak or QWERTY on [cyanophage](https://cyanophage.github.io/) using my own corpus. "Even if there was something better, this will be a huge win", I thought. So I stuck with it.
 
 Here's my version of the layout:
+
 ```
 b l d w x  k p u o y
 n r t s g  f h e a i
@@ -34,9 +36,9 @@ q j m c z  ' v , . ?
      spc    rep
 ```
 
-Main differences compared to regular Graphite/Gallium is the `ae` column swap, `y` on pinky and `v` on the right side. One way to look at it is Gallium base + Pine v4 elements on the right side.
+Main differences compared to regular Graphite/Gallium are the `ae` column swap, `y` on pinky and `v` on the right side. One way to look at it is a Gallium base + some Pine v4 elements on the right side.
 
-After nearly a year, here are my thoughts:
+Over half a year later, here are my thoughts:
 
 
 ### The Good
@@ -45,16 +47,16 @@ After nearly a year, here are my thoughts:
 
 - Alternation. This is of course a personal preference, but I definitely enjoy the rhythmic feel more than Colemak's rolling.
 
-- Most of the QWERTY left-side letters remains on the left side. I work in programs like Blender, which usually means only one hand on the keyboard and a ton of shortcuts, so keeping them on the same side is desirable. For example, Blender's GRS transforms are all on the left-side home-row. For the few important ones on the right side, I have a mirrored layer ready under one of the thumb keys.
+- Most of the QWERTY left-side letters remains on the left side. I work in programs like Blender, which usually means only one hand on the keyboard and a ton of shortcuts, so it's desirable to keep them on the same side. For example, Blender's GRS transforms are all on the left-side home-row. For the few important ones on the right side, I have a mirrored layer under one of the thumb keys.
 
 - Repeat Key. What a fantastic concept, double letter words are now a joy. This extends to vim shortcuts like `dd` as well! I still keep noticing places where I'm not using this enough.
 
 
 ### The Bad
 
-- In the beginning, `b` / `y` kinda bothered me, especially in Czech words like `kdyby` and `bylo`. Now I don't really mind it. The English `yi` also doesn't bother me as much as I thought it would (probably from all the years of pinky conditioning). However, the trigram `you` still feels a bit funky. Worth noting, the kb geometry could help with `b` / `y` quite a bit, I believe most boards don't have these keys enough to the side, which would be a more natural direction...
+- In the beginning, `b` / `y` kinda bothered me, especially in Czech words like `kdyby` and `bylo`. Now I don't really mind it. The English `yi` also doesn't bother me as much as I thought it would (probably from all the years of pinky conditioning). However, the trigram `you` still feels a bit funky. Worth noting, the kb geometry could help with top row pinkies quite a bit, I believe most boards don't have these keys enough to the side, which would be a more natural direction...
 
-- I don't love how `p`, `k` and `f` interact with the repeat key and vowels. One possible remedy could be to move the `x` and `'` keys to a layer and physically nudge the inner columns half a key to reduce the distances to `k` and `z`. Or I could try a different index arrangement, but tbh none of those seems better. TODO repetition:
+- I don't love how `p`, `k` and `f` interact with the repeat key and vowels. One possible remedy could be to move the `x` and `'` keys to a layer and physically nudge the inner columns half a key to reduce the distances to `k` and `z`. Or I could try a different index arrangement, but tbh none of those seems great.
 
 - Punctuation could be better, for example typing `o` or `y` on top row and then `.` or `?` on bottom row. Makes me wonder if the *Hands Down* solution could work better, but fixing the overloaded pinky in Czech seemed hard.
 
@@ -63,31 +65,31 @@ After nearly a year, here are my thoughts:
 But just to be clear, it's easy to point out all the subtleties of a new layout and forget how much better it is compared to QWERTY.
 
 
-> I almost envy people who write in just one language, they can pretty much go with whatever modern layout they vibe with and be done with it.
+<!-- > I almost envy people who write in just one language, they can pretty much go with whatever modern layout they vibe with and be done with it. -->
 
 
 ### The Unknown
 
-- Why not a thumb alpha layout? Honesty, I'm not sure. At one point I was experimenting with a `y` thumb, which felt decent, but very wasted. Using a more typical letter like `r` would require some more involved changes (skill issue), and also I wanted to keep those on the left side (space must remain on the left side, that is the law). Having the Repeat Key in that convenient position makes me less sad about the missed opportunities.
+- Why not a thumb alpha layout? At one point I was experimenting with a `y` thumb, which felt decent, but a bit wasted. Using a more typical letter like `r` would require some more involved changes (skill issue), and I'd rather keep `r` on the left side (with space on the left side, that is the law). Having a Repeat Key in that convenient position instead makes me less sad about the missed opportunities.
 
 - Magic Keys? Skill issue. Maybe I'll look into it some day, but for now I'm quite satisfied with the Repeat Key alone.
 
-- Was the `ae` swap necessary? What if I could fix the `y` some other way? (`y` on the left index had its own problems though)
+- Was the `ae` swap necessary? What if I could fix `y` some other way? (`y` on the left index had its own problems though)
 
-- It's top heavy. Which seems to be a standard among alt layouts, but is that a good idea? Deep down I know I probably prefer curling. A counter-thought is that what if I ever switch to a super minimal 2-row layout, then I could basically just drop the bottom.
+- It's top heavy. Which seems to be a standard among alt layouts, but is that a good idea? In theory, curling might make a bit more sense.
 
-- Svalboard - while very expensive at the moment, it could be the future. What if the current layouts end up being suboptimal on this form factor?
+- Svalboard - while pretty expensive at the moment, it could be the future. What if the current layouts end up being suboptimal on this form factor? Here's Ben Vallack's [video](https://www.youtube.com/watch?v=-Lz_FNoYHNM) about it.
 
 
 ### Fun Facts
 
-- The bottom row features `cz`, which is quite fitting for a layout decent at Czech.
-- `heavy` is a "heavy" one-hand word in this layout :)
+- The bottom row features `cz`, which is quite fitting 🇨🇿
+- `heavy` is a "heavy" one-handed word on this layout :)
 
 
 ## Learning
 
-I wish I tracked my progress better. Started on [keybr](https://www.keybr.com/) to engrain the main letters to my brain, but soon I started combining it with [monkeytype](https://monkeytype.com/) (I mostly knew all the positions from tweaking the layout). It was hard. 20 WPM, 30.. at 40-50 it was starting to feel like something, at 60 I was like OK, I can kinda type without feeling like a complete fool.
+I wish I tracked my progress better. Started on [keybr](https://www.keybr.com/) to engrain the main letters to my brain, but soon I transitioned to [monkeytype](https://monkeytype.com/) (I already knew most of the positions from tweaking the layout). It was hard. 20 WPM, 30.. at 40-50 it was starting to feel like something, at 60 I was like OK, I can kinda type without feeling like a complete fool.
 
 It's mentally taxing for a while though. Sometimes (especially under stress) it didn't matter I was at a certain WPM on monkeytype - I almost forget how to type for a second, and have to really concentrate.
 
