@@ -24,7 +24,7 @@ So naturally, I wrote my own layout generator. Well, I made it a while back, but
 
 A Gallium-style layout seemed like a much better fit for my requirements than Colemak, so I tried modifying it for better Czech stats. Turns out, someone going by *Brys* on the *akl* Discord server already made a layout catered towards Czech called `corymbia-cz-eng`. Whatever I tried, my version was approaching something similar, so I kinda went with it.
 
-The plan was to keep iterating on it, but at this point I was already practicing the homerow on keybr. What gave me some peace of mind was comparing it to Colemak or QWERTY on cyanophage.github.io using my own corpus. "Even if it's suboptimal, it will be a huge win", I thought. So I stuck with it.
+The plan was to keep iterating on it, but at this point I was already practicing the homerow on keybr. What gave me some peace of mind was comparing it to Colemak or QWERTY on [cyanophage](https://cyanophage.github.io/) using my own corpus. "Even if it's suboptimal, it will be a huge win", I thought. So I stuck with it.
 
 Here's my version of the layout:
 ```
@@ -38,18 +38,19 @@ Main differences compared to regular Graphite/Gallium is the `ae` column swap, `
 
 After nearly a year, here are my thoughts:
 
+
 ### The Good
 
 - Left hand is overall fantastic, `nrts` home-row is goated. Interestingly, when I'm focusing on accuracy, I'm mentally more aware of the left hand. Possibly because the load of the left side is more spread out between all the keys.
 
 - Alternation. This is of course a personal preference, but I definitely enjoy the rhythmic feel more than Colemak's rolling.
 
-- Most of the qwerty left-side letters remains on the left side. I work in programs like Blender, which usually means only one hand on the keyboard and a ton of shortcuts, so keeping them on the same side is desirable. For example, Blender's GRS transforms are all on the left-side home-row. For the few important ones on the right side, I have a mirrored layer ready under one of the thumb keys.
+- Most of the QWERTY left-side letters remains on the left side. I work in programs like Blender, which usually means only one hand on the keyboard and a ton of shortcuts, so keeping them on the same side is desirable. For example, Blender's GRS transforms are all on the left-side home-row. For the few important ones on the right side, I have a mirrored layer ready under one of the thumb keys.
 
 - Repeat Key. What a fantastic concept, double letter words are now a joy. This extends to vim shortcuts like `dd` as well! I still keep noticing places where I'm not using this enough.
 
 
-### The "Bad"
+### The Bad
 
 - In the beginning, `b` / `y` kinda bothered me, especially in Czech words like `kdyby` and `bylo`. Now I don't really mind it. The English `yi` also doesn't bother me as much as I thought it would (probably from all the years of pinky conditioning). However, the trigram `you` still feels a bit funky. Worth noting, the kb geometry could help with `b` / `y` quite a bit, I believe most boards don't have these keys enough to the side, which would be a more natural direction...
 
@@ -59,7 +60,10 @@ After nearly a year, here are my thoughts:
 
 - Sometimes I'm conscious of how the pinky side mostly reaches out, while the index side curls in, creating a subtle discrepancy.
 
-- Now bear in mind, it's easy to point out all the subtleties of a new layout and forget how much better it is compared to qwerty.
+But just to be clear, it's easy to point out all the subtleties of a new layout and forget how much better it is compared to QWERTY.
+
+
+> I almost envy people who write in just one language, they can pretty much go with whatever modern layout they vibe with and be done with it.
 
 
 ### The Unknown
@@ -68,14 +72,11 @@ After nearly a year, here are my thoughts:
 
 - Magic Keys? Skill issue. Maybe I'll look into it some day, but for now I'm quite satisfied with the Repeat Key alone.
 
-- Was the `ae` swap neccessary? What if I could fix the `y` some other way? (`y` on the left index had its own problems though)
+- Was the `ae` swap necessary? What if I could fix the `y` some other way? (`y` on the left index had its own problems though)
 
 - It's top heavy. Which seems to be a standard among alt layouts, but is that a good idea? Deep down I know I probably prefer curling. A counter-thought is that what if I ever switch to a super minimal 2-row layout, then I could basically just drop the bottom.
 
 - Svalboard - while very expensive at the moment, it could be the future. What if the current layouts end up being suboptimal on this form factor?
-
-
-> I almost envy people who write in just one language, they can pretty much go with whatever modern layout they vibe with and be done with it.
 
 
 ### Fun Facts
@@ -86,35 +87,32 @@ After nearly a year, here are my thoughts:
 
 ## Learning
 
-I wish I tracked my progress better. Started on key.br to engrain the main letters to my brain, but soon I started combining it with monkeytype (I mostly knew all the positions from tweaking the layout). It was hard. 20 WPM, 30.. at 40-50 it was starting to feel like something, at 60 I was like OK, I can kinda type without feeling like a complete fool.
+I wish I tracked my progress better. Started on [keybr](https://www.keybr.com/) to engrain the main letters to my brain, but soon I started combining it with [monkeytype](https://monkeytype.com/) (I mostly knew all the positions from tweaking the layout). It was hard. 20 WPM, 30.. at 40-50 it was starting to feel like something, at 60 I was like OK, I can kinda type without feeling like a complete fool.
 
 It's mentally taxing for a while though. Sometimes (especially under stress) it didn't matter I was at a certain WPM on monkeytype - I almost forget how to type for a second, and have to really concentrate.
 
-On a qwerty keybord, my typing speed was 80+ WPM. Right now, I'm at 75 WPM on monkeytype quotes. Not sure if it's something to be ashamed of, but it took me 7 months of somewhat inconsistent practice to get there.
+On a QWERTY keybord, my typing speed was 80+ WPM. At the time of writing, I'm at 75 WPM on monkeytype quotes. Not sure if it's something to be ashamed of, but it took me 7 months of practice to get there.
 
 > It ain't much but it's honest work.
 
-The obvious goal is to match my old speed but on this more comfortable layout.
+The obvious goal is to match my old speed but with less pain.
 
-Also, note that the learning process itself *can* be physically painful. Of course the end goal is a more comfortable, pain-free typing, but to get there, you have to put in the hours, which can put a toll on your hands. Mentioning just in case you are switching solely because of pain - take it easy, and be prepared it will take some time (probably months). If you are in a lot of pain, maybe look into lighter switches, split keebs and tenting first.
-
-My long term goal would be 100 WPM, but we'll see. Sometimes it's not all about the speed I suppose.
+Also, note that the learning process itself *can* be physically painful. Of course the end goal is a more comfortable, pain-free typing, but to get there, you have to put in the hours, which can put a toll on your hands. Mentioning just in case you are switching solely because of pain - take it easy, and be prepared it will take some time (probably months). If you are in a lot of pain, maybe look into lighter switches etc. first.
 
 
 ## Conclusion
 
-I'm glad I switched. Typing is now really creamy and it's a decision from which I might benefit my entire life. If you are looking into a Gallium-style layout, I can recommend it. Most of the small issuess I encountered had something to do with the Czech adjustments.
-
-<!-- All this might sound negative, but to be clear, I'm overall quite pleased! It's easy to point out all the subtleties of a new layout and forget how much better it is compared to qwerty. -->
+I'm glad I switched. Typing is now really creamy and it's a decision from which I might benefit my entire life. If you are looking into a Gallium-style layout, I can recommend it. Most of the small issues I encountered had something to do with the Czech adjustments.
 
 Thanks Brys, and thanks to the AKL community for pushing this niche research forward.
 
-
-Thanks for reading my 1st blog post! And remember, qwerty bad.
+Thanks for reading my 1st blog post! And remember, QWERTY bad.
 
 
 ## Useful Links
 
-- [layout doc v3](https://docs.google.com/document/d/1W0jhfqJI2ueJ2FNseR4YAFpNfsUM-_FlREHbpNGmC2o)
 - [cyanophage.github.io](https://cyanophage.github.io/)
-
+- [the layout doc v3](https://docs.google.com/document/d/1W0jhfqJI2ueJ2FNseR4YAFpNfsUM-_FlREHbpNGmC2o)
+- [monkeytype.com](https://monkeytype.com/)
+- [keybr.com](https://www.keybr.com/)
+- [getreuer.info](https://getreuer.info/posts/keyboards/alt-layouts/index.html)
