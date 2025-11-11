@@ -41,6 +41,10 @@ body {
     margin: 0;
 }
 
+.section {
+    min-height: calc(100vh - 15em - 100px);
+}
+
 .container {
     margin-bottom: 100px;
 }
@@ -131,18 +135,20 @@ h1 {
 }
 
 h2 {
-    margin-top: 4.5rem;
+    font-size: 1.6em;
+    margin-top: 3.0em;
     position: relative;
 }
 
 h3 {
+    font-size: 1.3em;
     margin-top: 3rem;
     position: relative;
 }
 
 /* h2::before, h3::before { */
 /*     position: absolute; */
-/*     color: var(--color-smol); */
+/*     color: var(--color-dim); */
 /* } */
 /**/
 /* h2::before { */
@@ -154,6 +160,11 @@ h3 {
 /*     content: "##"; */
 /*     left: -3ch; */
 /* } */
+
+::selection {
+  color: var(--color-bg);
+  background: var(--color-blue);
+}
 
 .subtitle {
     margin-top: .75em;
@@ -175,7 +186,7 @@ nav ul {
 
 nav > ul > li {
     float: left;
-    margin-left: 1em;
+    margin-left: 1.2em;
 }
 
 nav > ul > li::marker {
@@ -198,6 +209,7 @@ a {
     color: inherit;
     text-decoration: underline solid 3px var(--color-dim);
     text-underline-offset: 3px;
+    transition: all 700ms cubic-bezier(0.1, 1.0, 0.1, 1.0);
 }
 
 a:hover,
@@ -233,6 +245,6 @@ footer {
     color: var(--color-dim);
 }
 
-footer p {
+footer > p {
     margin: 0;
 }
