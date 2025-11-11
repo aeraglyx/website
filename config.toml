@@ -1,4 +1,4 @@
-base_url = "https://aeraglyx.com"
+base_url = "https://www.aeraglyx.com"
 
 taxonomies = [
     { name = "tags", feed = true, render = false},
