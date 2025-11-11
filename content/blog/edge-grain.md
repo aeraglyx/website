@@ -4,13 +4,13 @@ date = 2025-11-27
 taxonomies.tags = ["vfx", "math"]
 +++
 
-When merging a grain-free element on top of a grainy footage, we need to match the grain. But what about the edges? The default linear interpolation is not ideal.
+When merging a grain-free element on top of a grainy footage, we match the grain and that's it, right? Not quite, by default you'll get weaker grain in the edges. Let's figure out why and how to fix this.
 
-When we mix multiple noisy signals, the overall signal to noise ratio changes with `1 / sqrt(n)`, so for 2 signals, that is roughly 0.707. When combining two signals with different signal to noise ratios (which is essentially what blending 2 noisy images is), the noise is:
+When we blend multiple noisy signals, the overall noise to signal ratio (NSR) changes with `1 / sqrt(n)`, so for 2 signals, that is roughly 0.707. More generally, when combining two signals with different noise strengths (which is essentially what blending 2 noisy images is), the noise is:
 
 `sqrt(s1 ^ 2 + s2 ^ 2)`
 
-If we say that s1 is the desired strength based on the original alpha, s2 the inverted alpha (noise that remains in the bg after the merge) and we set it to 1, we get:
+If we say that s1 is the desired strength based on the original alpha, s2 the inverted alpha (noise that remains in the bg after the merge) and we set it to 1 (representing constant SNR), we get:
 
 `1 = sqrt(a1 ^ 2 + (1 - a) ^ 2)`
 
@@ -27,8 +27,3 @@ If we want to apply the grain before the premult and merge, we simply divide it 
 `sqrt(a * (2 - a)) / a`
 
 However, note that this form shoots off to infinity as it approaches a=0, which could cause problems.
-
-
-## Foreground Grain Baked In?
-
-You could try frequency separation to get the original grain and enhance it with the 2nd form, but your milage may vary.

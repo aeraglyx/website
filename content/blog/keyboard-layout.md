@@ -94,16 +94,11 @@ On a qwerty keybord, my typing speed was 80+ WPM. Right now, I'm at 75 WPM on mo
 
 > It ain't much but it's honest work.
 
+The obvious goal is to match my old speed but on this more comfortable layout.
+
 Also, note that the learning process itself *can* be physically painful. Of course the end goal is a more comfortable, pain-free typing, but to get there, you have to put in the hours, which can put a toll on your hands. Mentioning just in case you are switching solely because of pain - take it easy, and be prepared it will take some time (probably months). If you are in a lot of pain, maybe look into lighter switches, split keebs and tenting first.
 
 My long term goal would be 100 WPM, but we'll see. Sometimes it's not all about the speed I suppose.
-
-
-## Vroom, Vroom
-
-On a normie qwerty keybord, my typing speed was 80+ WPM. Right now, I'm at 70+ WPM on monkeytype quotes. The obvious goal is to match my old speed but on this more comfortable layout.
-
-Long term goal would be 100 WPM, but we'll see. Sometimes it's not all about the speed I suppose.
 
 
 ## Conclusion
