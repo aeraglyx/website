@@ -29,25 +29,28 @@
 * {
     font-family: "Cascadia Code";
     box-sizing: border-box;
-    /* font-weight: 500; */
 }
 
-/* html { */
-/* } */
+html, body {
+    height: 100%;
+}
 
 body {
     background-color: var(--color-bg);
     color: var(--color-fg);
     margin: 0;
+    display: flex;
+    flex-direction: column;
 }
 
 .section {
-    min-height: calc(100vh - 15em - 100px);
+    padding-bottom: 100px;
+    flex: 1 0 auto;
 }
 
-.container {
-    margin-bottom: 100px;
-}
+/* .container { */
+/*     margin-bottom: 100px; */
+/* } */
 
 .column {
     margin: auto;
@@ -112,7 +115,7 @@ li > code {
 
 .about > p {
     margin: 0;
-    padding: 2.5em 3em;
+    padding: 2.5em 3.0em;
 }
 
 h1,
@@ -144,21 +147,6 @@ h3 {
     position: relative;
 }
 
-/* h2::before, h3::before { */
-/*     position: absolute; */
-/*     color: var(--color-dim); */
-/* } */
-/**/
-/* h2::before { */
-/*     content: "#"; */
-/*     left: -2ch; */
-/* } */
-/**/
-/* h3::before { */
-/*     content: "##"; */
-/*     left: -3ch; */
-/* } */
-
 ::selection {
   color: var(--color-bg);
   background: var(--color-blue);
@@ -180,11 +168,12 @@ nav ul {
     /* list-style: none; */
     padding: 0;
     margin: 0;
+    font-weight: 900;
 }
 
 nav > ul > li {
     float: left;
-    margin-left: 1.2em;
+    margin-left: 1.1em;
 }
 
 nav > ul > li::marker {
@@ -211,17 +200,18 @@ a:active {
     text-decoration-color: var(--color-blue);
 }
 
-header {
-    font-size: 1.3em;
-    height: 5em;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+a {
+    padding: .4em;
+    margin: -.4em;
 }
 
-header a {
-    padding: .5em;
-    margin: -.5em;
+header {
+    font-size: 1.3em;
+    min-height: 5em;
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
 }
 
 header h1 {
@@ -231,12 +221,12 @@ header h1 {
 }
 
 footer {
-    height: 5em;
-    margin-top: 100px;
+    height: 6em;
     display: flex;
     align-items: center;
     justify-content: center;
     color: var(--color-dim);
+    flex-shrink: 0;
 }
 
 footer > p {
