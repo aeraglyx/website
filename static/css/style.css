@@ -64,13 +64,17 @@ pre {
     line-height: 1.6;
 }
 
+pre, blockquote {
+    box-shadow: 0.75em 0.75em var(--color-deep);
+    border-radius: .75em;
+}
+
 blockquote {
     margin: 0;
     margin-top: 1.6em;
     padding: 1em 1.5em;
     background-color: var(--color-bg-2);
-    border-radius: .75em;
-    border-left: solid 5px var(--color-dim);
+    border-left: solid 4px var(--color-blue);
 }
 
 blockquote p {
@@ -79,25 +83,19 @@ blockquote p {
     font-style: italic;
 }
 
-pre, blockquote {
-    box-shadow: 0.75em 0.75em var(--color-deep);
-}
-
 pre {
     line-height: 1.15;
     padding: 1em 1.5em;
-    border-radius: .75em;
-    /* background-color: var(--color-bg-2); */
     border: solid 3px var(--color-smol);
+    /* background-color: var(--color-bg-2); */
 }
 
 p > code,
 li > code {
     padding: .125ch .5ch;
     border-radius: .38em;
-    /* color: var(--color-purp); */
-    background-color: var(--color-bg-2);
-    border: 2px solid var(--color-dim);
+    border: 2px solid var(--color-smol);
+    box-shadow: 0.25em 0.25em var(--color-deep);
 }
 
 .about {
@@ -200,10 +198,6 @@ nav ul li a {
 nav > ul > li.active {
     color: var(--color-bg);
 }
-
-/* nav > ul > li.active > a { */
-/*     color: var(--color-bg) */
-/* } */
 
 a {
     color: inherit;
