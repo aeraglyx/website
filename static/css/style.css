@@ -68,16 +68,16 @@ pre {
 }
 
 pre, blockquote {
-    box-shadow: 0.75em 0.75em var(--color-deep);
-    border-radius: .75em;
+    border-radius: .75rem;
+    box-shadow: 0.6rem 0.6rem var(--color-deep);
 }
 
 blockquote {
     margin: 0;
-    margin-top: 1.6em;
-    padding: 1em 1.5em;
+    margin-top: 1.6rem;
+    padding: 1rem 1.5rem;
     background-color: var(--color-bg-2);
-    border-left: solid 4px var(--color-blue);
+    border-left: solid 4px var(--color-meh);
 }
 
 blockquote p {
@@ -88,34 +88,33 @@ blockquote p {
 
 pre {
     line-height: 1.15;
-    padding: 1em 1.5em;
+    padding: 1rem 1.5rem;
     border: solid 3px var(--color-smol);
-    /* background-color: var(--color-bg-2); */
 }
 
 p > code,
 li > code {
     padding: .125ch .5ch;
+    margin: 0 -0.5ch;
     border-radius: .38em;
     border: 2px solid var(--color-smol);
-    box-shadow: 0.25em 0.25em var(--color-deep);
+    box-shadow: 0.25rem 0.25rem var(--color-deep);
 }
 
 .about {
     border: solid 3px var(--color-smol);
-    border-radius: 1.0em;
-    box-shadow: 1em 1em var(--color-deep);
-    margin-top: 3em;
+    border-radius: 1.0rem;
+    box-shadow: 1.0rem 1.0rem var(--color-deep);
+    margin-top: 3rem;
     transition: box-shadow 500ms;
 }
 
 .about:hover {
-    box-shadow: 3em 3em var(--color-deep);
+    box-shadow: 2.5rem 2.5rem var(--color-deep);
 }
 
 .about > p {
-    margin: 0;
-    padding: 2.5em 3.0em;
+    margin: 2.5rem 3.0rem;
 }
 
 h1,
@@ -130,20 +129,20 @@ h6 {
 }
 
 h1 {
-    color: var(--color-blue);
-    margin-top: 2.5em;
+    font-size: 2.4rem;
+    margin-top: 5.0rem;
     text-align: center;
 }
 
 h2 {
-    font-size: 1.6em;
-    margin-top: 3.0em;
+    font-size: 1.8rem;
+    margin-top: 5.0rem;
     position: relative;
 }
 
 h3 {
-    font-size: 1.3em;
-    margin-top: 3rem;
+    font-size: 1.4rem;
+    margin-top: 3.0rem;
     position: relative;
 }
 
@@ -153,8 +152,8 @@ h3 {
 }
 
 .subtitle {
-    margin-top: .75em;
-    margin-bottom: 4.5em;
+    margin-top: .75rem;
+    margin-bottom: 4.5rem;
     color: var(--color-dim);
     text-align: center;
 }
@@ -206,8 +205,8 @@ a {
 }
 
 header {
-    font-size: 1.3em;
-    min-height: 5em;
+    font-size: 1.3rem;
+    min-height: 6rem;
     display: flex;
     width: 100%;
     align-items: center;
@@ -221,7 +220,7 @@ header h1 {
 }
 
 footer {
-    height: 6em;
+    height: 6rem;
     display: flex;
     align-items: center;
     justify-content: center;
