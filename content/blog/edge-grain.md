@@ -11,11 +11,11 @@ When we blend multiple noisy signals, the overall noise to signal ratio changes 
 
 `sqrt(s1 ^ 2 + s2 ^ 2)`
 
-When linearly interpolating the 2 images, s1 represents the fg alpha, s2 its inverse (the remaining bg grain after the merge). If we plug in `x` for s1 (the original alpha), `1-x` for s2 and plot it, we get a U-curve that showcases the problem.
+When linearly interpolating the 2 images, s1 represents the fg alpha, s2 its inverse (the remaining bg grain after the merge). So if we plug in `x` for s1 (the original alpha), `1-x` for s2 and plot it, we get a U-curve that showcases the problem.
 
 <!-- TODO: plot img -->
 
-But what if we could modify `x` in some way that cancels out the U-curve and gives us a flat response? Let's call this modified alpha `x'`.
+But what if we modify `x` in some way that cancels out the U-curve and gives us a flat response? Let's call this modified alpha `x'`.
 
 If we say that s1 is the desired strength based on the original alpha, s2 the inverted alpha and we set it to 1 (representing constant NSR), we get:
 
