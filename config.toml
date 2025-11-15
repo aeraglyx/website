@@ -1,7 +1,7 @@
 base_url = "https://www.aeraglyx.com"
 
 taxonomies = [
-    { name = "tags", feed = true, render = false},
+    { name = "tags", feed = true, render = true},
 ]
 
 [extra]
