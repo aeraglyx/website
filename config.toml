@@ -7,8 +7,7 @@ taxonomies = [
 [extra]
 nav = [
     { name = "blog", url = "/blog/" },
-    { name = "work", url = "/blog/" },
-    { name = "links", url = "/blog/" },
+    { name = "vfx", url = "/vfx/" },
 ]
 links = [
     { name = "github", url = "https://github.com/aeraglyx" },
