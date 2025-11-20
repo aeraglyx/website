@@ -25,6 +25,7 @@
     --color-fg: #c8c8c8;
     --color-blue: #96c6dd;
     --color-purp: #bcb8e2;
+    --transition: 500ms cubic-bezier(0.1, 1.0, 0.1, 1.0);
 }
 
 * {
@@ -217,7 +218,7 @@ a {
     color: inherit;
     text-decoration: underline solid 3px var(--color-dim);
     text-underline-offset: 2px;
-    transition: all 600ms cubic-bezier(0.1, 1.0, 0.1, 1.0);
+    transition: text-decoration-color var(--transition);
 }
 
 a:hover,
