@@ -276,10 +276,31 @@ footer {
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--color-dim);
+    gap: 0.8rem;
     flex-shrink: 0;
+    color: var(--color-dim);
 }
 
 footer > p {
     margin: 0;
+}
+
+.icon-link {
+    text-decoration: none;
+    transition: color var(--transition);
+}
+
+.icon-link:hover {
+    color: var(--color-fg);
+}
+
+.icon-img {
+    width: 1.25rem;
+    margin-top: 0.4rem;
+    filter: invert(31%) sepia(0%) saturate(433%) hue-rotate(241deg) brightness(95%) contrast(86%);
+    transition: filter var(--transition);
+}
+
+.icon-img:hover {
+    filter: invert(87%) sepia(5%) saturate(24%) hue-rotate(123deg) brightness(92%) contrast(93%);
 }

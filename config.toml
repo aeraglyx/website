@@ -10,3 +10,8 @@ nav = [
     { name = "work", url = "/blog/" },
     { name = "links", url = "/blog/" },
 ]
+links = [
+    { name = "github", url = "https://github.com/aeraglyx" },
+    { name = "twitter", url = "https://x.com/aeraglyx" },
+    { name = "linkedin", url = "https://www.linkedin.com/in/aeraglyx/" },
+]
