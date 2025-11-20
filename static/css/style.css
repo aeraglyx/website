@@ -15,6 +15,7 @@
 }
 
 :root {
+    color-scheme: dark;
     --color-deep: #1c1c1c;
     --color-bg: #202020;
     --color-bg-2: #292929;
