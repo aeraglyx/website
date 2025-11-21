@@ -190,16 +190,19 @@ h3 {
   background: var(--color-blue);
 }
 
-.subtitle {
-    margin-top: .75rem;
-    color: var(--color-dim);
-    text-align: center;
-}
-
 .title-section {
     margin-top: 5.0rem;
     margin-bottom: 4.0rem;
     padding-bottom: 2rem;
+}
+
+.subtitle {
+    display: flex;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-top: .75rem;
+    color: var(--color-dim);
+    text-align: center;
 }
 
 ::marker {
@@ -255,26 +258,33 @@ a {
 .tags {
     padding: 0;
     margin: 0;
-    white-space: nowrap;
+    display: flex;
+    gap: 0.75rem;
 }
 
 .tags > li {
-    margin-left: 0.25rem;
     display: inline-block;
     color: var(--color-dim);
     text-decoration: none;
 }
 
 .tags > li > a {
-    padding: 0.2rem 0.4rem;
     margin: 0;
-    border: solid 3px var(--color-smol);
-    border-radius: 0.5rem;
+    padding: 0.15rem 0.4rem;
     text-decoration: none;
+    border-radius: 0.5rem;
+    border: solid 3px var(--color-smol);
+    transition: border-color var(--transition);
 }
 
 .tags > li > a:hover {
     border-color: var(--color-dim);
+}
+
+.tags > li > a::before {
+    content: "#";
+    margin-right: 0.25rem;
+    color: var(--color-smol);
 }
 
 header {
