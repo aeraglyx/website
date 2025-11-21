@@ -43,6 +43,7 @@ body {
     margin: 0;
     display: flex;
     flex-direction: column;
+    line-height: 1.5;
 }
 
 .section {
@@ -66,7 +67,6 @@ ul,
 pre {
     margin-top: 1.75rem;
     margin-bottom: 0;
-    line-height: 1.6;
 }
 
 iframe {
@@ -109,20 +109,47 @@ li > code {
     box-shadow: 0.25rem 0.25rem var(--color-deep);
 }
 
-.about {
-    margin-top: 3rem;
+.term {
+    margin-top: 5.0rem;
+    padding: 1.8rem 2.2rem;
     border: solid 3px var(--color-smol);
     border-radius: 1.0rem;
     box-shadow: 0.7rem 0.7rem var(--color-deep);
-    transition: box-shadow 500ms;
+    transition: box-shadow 0.75s;
 }
 
-.about:hover {
-    box-shadow: 2.4rem 2.4rem var(--color-deep);
+.term:hover {
+    box-shadow: 2.5rem 2.5rem var(--color-deep);
 }
 
-.about > p {
-    margin: 2.5rem 3.0rem;
+.term > p {
+    margin: 0;
+}
+
+.term-extra {
+    color: var(--color-meh);
+    font-weight: bold;
+}
+
+.term-symbol {
+    color: var(--color-blue);
+    font-weight: bold;
+}
+
+.term > p.term-output {
+    margin: 1.5rem 0;
+}
+
+.term-prompt {
+    line-height: normal;
+}
+
+.term-cursor {
+    animation: blinker 1.5s cubic-bezier(0.1, 1.0, 0.1, 1.0) infinite;
+}
+
+@keyframes blinker {
+    50% { opacity: 0; }
 }
 
 /* .page-info { */

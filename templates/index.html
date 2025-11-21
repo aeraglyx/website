@@ -1,7 +1,18 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="about">
-    <p>Hi, I'm a VFX artist / TD / recreational programmer. At work we use Blender, so I make in-house tools like node groups, add-ons and scripts, but I also enjoy some compositing and anything math/physics related. In the free time I'm tweaking my dotfiles, writing this website and occasionally touching grass.</p>
-</div>
+
+<section class="term">
+
+    <p class="term-prompt"><span class="term-extra">╭──</span> ~</p>
+    <p class="term-prompt"><span class="term-extra">╰─</span><span class="term-symbol">λ</span> cat about.md</p>
+
+    <p class="term-output">Hi, I'm a VFX artist / TD / recreational programmer.</p>
+    <p class="term-output">At work I make tools like node groups, add-ons and scripts, but I also enjoy some compositing and anything math/physics related. In the free time I'm tweaking my dotfiles, working on a side project (like this website) or sleeping. Oh, and I use NixOS (btw).</p>
+
+    <p class="term-prompt"><span class="term-extra">╭──</span> ~</p>
+    <p class="term-prompt"><span class="term-extra">╰─</span><span class="term-symbol">λ</span> <span class="term-cursor">&#9609</span></p>
+
+</section>
+
 {% endblock content %}
