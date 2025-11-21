@@ -95,7 +95,7 @@ blockquote p {
 }
 
 pre {
-    line-height: 1.15;
+    line-height: normal;
     padding: 1rem 1.5rem;
     border: solid 3px var(--color-smol);
 }
@@ -161,13 +161,8 @@ li > code {
 /*     content: " min"; */
 /* } */
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-    font-weight: 900;
+h1, h2, h3, h4, h5, h6 {
+    /* font-weight: 900; */
     color: var(--color-blue);
     margin-bottom: 0;
 }
@@ -213,10 +208,9 @@ h3 {
 }
 
 nav ul {
-    /* list-style: none; */
     padding: 0;
     margin: 0;
-    font-weight: 900;
+    font-weight: bold;
 }
 
 nav > ul > li {
