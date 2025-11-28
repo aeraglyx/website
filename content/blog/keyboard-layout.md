@@ -93,7 +93,7 @@ I wish I tracked my progress better. Started on [keybr](https://www.keybr.com/) 
 
 It's mentally taxing for a while though. Sometimes (especially under stress) it didn't matter I was at a certain WPM on monkeytype - I almost forget how to type for a second, and have to really concentrate.
 
-On a QWERTY keybord, my typing speed was 80+ WPM. At the time of writing, I'm at 75 WPM on monkeytype quotes. Not sure if it's something to be ashamed of, but it took me 7 months of practice to get there.
+On a QWERTY keyboard, my typing speed was 80+ WPM. At the time of writing, I'm at 75 WPM on monkeytype quotes. Not sure if it's something to be ashamed of, but it took me 7 months of practice to get there.
 
 > It ain't much but it's honest work.
 
