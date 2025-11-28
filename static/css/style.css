@@ -152,14 +152,55 @@ li > code {
     50% { opacity: 0; }
 }
 
-/* .page-info { */
-/*     color: var(--color-dim); */
-/*     margin-left: 1.5rem; */
-/* } */
+.page-list {
+    padding: 0;
+}
 
-/* .page-info::after { */
-/*     content: " min"; */
-/* } */
+.page-list-item {
+    display: flex;
+    flex-direction: column;
+    margin-top: 2.5rem;
+    border-radius: 1.0rem;
+    background-color: var(--color-bg);
+}
+
+.page-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 0.6rem;
+}
+
+.page-title a {
+    text-decoration: none;
+    font-size: 1.3rem;
+    font-weight: bold;
+    transition: color var(--transition);
+}
+
+.page-title a:hover {
+    color: var(--color-blue);
+}
+
+.page-subtitle {
+    color: var(--color-dim);
+    display: flex;
+    gap: 0.6rem;
+    margin-top: 0.0rem;
+}
+
+.page-subtitle p {
+    margin: 0;
+}
+
+.page-info {
+    margin-left: 1rem;
+    color: var(--color-dim);
+}
+
+.page-info::after {
+    content: " min";
+}
 
 h1, h2, h3, h4, h5, h6 {
     /* font-weight: 900; */

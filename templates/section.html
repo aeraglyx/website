@@ -7,13 +7,33 @@
     </h1>
 </div>
 
-<ul>
+<ul class="page-list">
     {% for page in section.pages %}
-    <li>
-        <a href="{{ page.permalink | safe }}">
-            {{ page.title }}
-        </a>
-        {# <span class="page-info">{{ page.reading_time }}</span> #}
+    <li class="page-list-item">
+
+        <div class="page-title">
+            <a href="{{ page.permalink | safe }}">
+                {{ page.title }}
+            </a>
+            <span class="page-info">{{ page.reading_time }}</span>
+        </div>
+
+        <div class="page-subtitle">
+            {% if page.date %}
+            <p><date>{{ page.date }}</date></p>
+            {% endif %}
+
+            {% if page.taxonomies.tags %}
+            <ul class="tags">
+                {% for tag in page.taxonomies.tags %}
+                <li>
+                    <a href="{{ get_taxonomy_url(kind='tags', name=tag) }}">{{ tag }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        </div>
+
     </li>
     {% endfor %}
 </ul>
