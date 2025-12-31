@@ -30,6 +30,7 @@
 
 * {
     font-family: "Cascadia Code";
+    letter-spacing: 0.02em;
     box-sizing: border-box;
 }
 
@@ -43,7 +44,7 @@ body {
     margin: 0;
     display: flex;
     flex-direction: column;
-    line-height: 1.5;
+    line-height: 1.6;
 }
 
 .section {
@@ -141,7 +142,7 @@ li > code {
 }
 
 .term-prompt {
-    line-height: normal;
+    line-height: 1.15;
 }
 
 .term-cursor {
