@@ -340,7 +340,21 @@ a {
 hr {
     margin: 4.0rem auto;
     width: 33%;
-    border: solid 1px var(--color-smol);
+    height: 0px;
+    border: none;
+    border-top: solid 2px var(--color-smol);
+    overflow: visible;
+    text-align: center;
+}
+
+hr::after {
+    content: "λ";
+    font-weight: bold;
+    padding: 0 0.5rem;
+    position: relative;
+    top: -13px;
+    color: var(--color-smol);
+    background: var(--color-bg);
 }
 
 header {
