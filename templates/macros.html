@@ -3,7 +3,7 @@
     {% for page in pages %}
     <li class="page-list-item">
         <div class="page-title">
-            <a href="{{ page.permalink | safe }}">
+            <a href="{{ page.permalink | safe }}"{% if page.draft %} class="draft"{% endif %}>
                 {{- page.title -}}
             </a>
             <span class="page-info">{{ page.reading_time }}</span>

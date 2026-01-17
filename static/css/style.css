@@ -207,6 +207,10 @@ li > code {
     content: " min";
 }
 
+.draft {
+    color: var(--color-dim);
+}
+
 h1, h2, h3, h4, h5, h6 {
     /* font-weight: 900; */
     color: var(--color-blue);
