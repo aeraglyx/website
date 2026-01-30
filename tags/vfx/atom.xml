@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title> - vfx</title>
+    <link rel="self" type="application/atom+xml" href="https://www.aeraglyx.com/tags/vfx/atom.xml"/>
+    <link rel="alternate" type="text/html" href="https://www.aeraglyx.com"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2026-01-05T00:00:00+00:00</updated>
+    <id>https://www.aeraglyx.com/tags/vfx/atom.xml</id>
+    <entry xml:lang="en">
+        <title>Vignette Compensation</title>
+        <published>2026-01-05T00:00:00+00:00</published>
+        <updated>2026-01-05T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://www.aeraglyx.com/blog/vignette/"/>
+        <id>https://www.aeraglyx.com/blog/vignette/</id>
+        
+        <content type="html" xml:base="https://www.aeraglyx.com/blog/vignette/">&lt;p&gt;What if you don&#x27;t have a reference vignette plate? No problem! If we know the sensor size and focal length (or at least the rough FOV), we have everything necessary for a decent approximation.&lt;&#x2F;p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;We&#x27;ll be talking about the soft natural vignette here, not the optical or mechanical vignette (where parts of the lens are actually obstructing the view).&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;Natural vignette is given by:&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;v = cos(a)^4&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;Where &lt;code&gt;a&lt;&#x2F;code&gt; is the angle from optical center. To calculate this angle, we first use the normalized screen coordinates &lt;code&gt;x&lt;&#x2F;code&gt; and &lt;code&gt;y&lt;&#x2F;code&gt; to make a radial gradient that goes from 0 in the center to 0.5 at the sides (taking aspect ratio into account):&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;d = (x - 0.5)^2 + ((y - 0.5) * h&#x2F;w)^2&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;If we then multiply this gradient by sensor size, we get a physical distance from the sensor center. We can now imagine a right angle triangle where this distance is the opposite edge, focal length the adjacent edge and &lt;code&gt;a&lt;&#x2F;code&gt; our unknown angle:&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;a = arctan(sensor_size * d &#x2F; focal_length)&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;The units of &lt;code&gt;sensor_size&lt;&#x2F;code&gt; and &lt;code&gt;focal_length&lt;&#x2F;code&gt; cancel out, so if we want to, we can use millimeters for both. This cancellation also means, that we don&#x27;t care about the actual sensor size and focal length, more like the resulting FOV. E.g. if we don&#x27;t know the sensor, but it&#x27;s possible to 3D track the footage, that&#x27;s also enough.&lt;&#x2F;p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;This is all assuming rectilinear projection. So either apply the vignetting to undistorted footage, or distort the vignette.&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;p&gt;Plug &lt;code&gt;a&lt;&#x2F;code&gt; into the main equation &lt;code&gt;v = cos(a)^4&lt;&#x2F;code&gt;, and we&#x27;re done. To get rid of vignette you would divide the footage by &lt;code&gt;v&lt;&#x2F;code&gt;, to simulate vignette you would multiply by &lt;code&gt;v&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;The footage needs to be linearized for this to work.&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;p&gt;If necessary, the inner &lt;code&gt;a&lt;&#x2F;code&gt; can be multiplied up or down to compensate for any real world inconsistencies.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;Hope this was useful. And please, unless you are dealing with some mechanical vignette, no more blurred ellipses from now on! Although to be fair, anamorphic lenses would produce horizontally stretched vignetting.&lt;&#x2F;p&gt;
+&lt;p&gt;I might make a vignette &lt;code&gt;.fuse&lt;&#x2F;code&gt; someday, but for now here&#x27;s at least a &lt;code&gt;CustomTool&lt;&#x2F;code&gt; for Fusion (just copy-paste into the node tree):&lt;&#x2F;p&gt;
+&lt;pre&gt;&lt;code data-lang=&quot;lua&quot;&gt;{
+    Tools = ordered() {
+        Vignette = Custom {
+            CtrlWZoom = false,
+            Inputs = {
+                NumberIn1 = Input { Value = 50.0, },
+                NumberIn2 = Input { Value = 36.0, },
+                Intermediate1 = Input { Value = &amp;quot;(x-0.5)^2+((y-0.5)*h&#x2F;w)^2&amp;quot;, },
+                Intermediate2 = Input { Value = &amp;quot;atan(n2*i1&#x2F;n1)&amp;quot;, },
+                Intermediate3 = Input { Value = &amp;quot;cos(i2)^4&amp;quot;, },
+                RedExpression = Input { Value = &amp;quot;i3&amp;quot;, },
+                GreenExpression = Input { Value = &amp;quot;i3&amp;quot;, },
+                BlueExpression = Input { Value = &amp;quot;i3&amp;quot;, },
+                AlphaExpression = Input { Value = &amp;quot;1&amp;quot;, },
+                NameforNumber1 = Input { Value = &amp;quot;Focal Length&amp;quot;, },
+                NameforNumber2 = Input { Value = &amp;quot;Sensor Size&amp;quot;, },
+                ShowNumber3 = Input { Value = 0, },
+                ShowNumber4 = Input { Value = 0, },
+                ShowNumber5 = Input { Value = 0, },
+                ShowNumber6 = Input { Value = 0, },
+                ShowNumber7 = Input { Value = 0, },
+                ShowNumber8 = Input { Value = 0, },
+                ShowPoint1 = Input { Value = 0, },
+                ShowPoint2 = Input { Value = 0, },
+                ShowPoint3 = Input { Value = 0, },
+                ShowPoint4 = Input { Value = 0, },
+            },
+            ViewInfo = OperatorInfo { Pos = { 0, 0 } },
+        }
+    },
+    ActiveTool = &amp;quot;Vignette&amp;quot;
+}
+&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Fusion expects degrees instead of radians for trigonometric functions, but since we just pass the angle from &lt;code&gt;atan()&lt;&#x2F;code&gt; to &lt;code&gt;cos()&lt;&#x2F;code&gt;, we don&#x27;t have to worry about that.&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Edge Grain</title>
+        <published>2025-11-11T00:00:00+00:00</published>
+        <updated>2025-11-11T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://www.aeraglyx.com/blog/edge-grain/"/>
+        <id>https://www.aeraglyx.com/blog/edge-grain/</id>
+        
+        <content type="html" xml:base="https://www.aeraglyx.com/blog/edge-grain/">&lt;p&gt;When merging a grain-free element on top of a grainy footage, we match the grain and that&#x27;s it, right? Well not quite, by mixing 2 uncorrelated grains, we get weaker grain in the edges. Let&#x27;s figure out why and how to fix this.&lt;&#x2F;p&gt;
+&lt;p&gt;When we blend multiple noisy signals, the overall noise to signal ratio changes with &lt;code&gt;1 &#x2F; sqrt(n)&lt;&#x2F;code&gt;, so for 2 signals, that is roughly 0.707. More generally, when combining two signals with different noise strengths, the resulting noise is:&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;sqrt(s1 ^ 2 + s2 ^ 2)&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;When linearly interpolating the 2 images, s1 represents the fg alpha, s2 its inverse (the remaining bg grain after the merge). So if we plug in &lt;code&gt;x&lt;&#x2F;code&gt; for s1 (the original alpha), &lt;code&gt;1-x&lt;&#x2F;code&gt; for s2 and plot it, we get a U-curve that showcases the problem.&lt;&#x2F;p&gt;
+&lt;!-- TODO: plot img --&gt;
+&lt;p&gt;But what if we modify &lt;code&gt;x&lt;&#x2F;code&gt; in some way that cancels out the U-curve and gives us a flat response? Let&#x27;s call this modified alpha &lt;code&gt;x&#x27;&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
+&lt;p&gt;If we say that s1 is the desired strength based on the original alpha, s2 the inverted alpha and we set it to 1 (representing constant NSR), we get:&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;1 = sqrt(x&#x27; ^ 2 + (1 - x) ^ 2)&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;Solving for &lt;code&gt;x&#x27;&lt;&#x2F;code&gt;:&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;x&#x27; = sqrt(x * (2 - x))&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;Which is a circle! I just love these kinds of problems.&lt;&#x2F;p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;So in practice, the solution is to add a grain node after the merge, and for the mask use the former function, where &lt;code&gt;x&lt;&#x2F;code&gt; is the fg alpha.&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;!-- TODO:  add before&#x2F;after img--&gt;
+&lt;p&gt;If we want to apply the grain before the premult and merge, we simply divide it by the alpha to get:&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;sqrt(x * (2 - x)) &#x2F; x&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;However, note that this form shoots off to infinity as it approaches &lt;code&gt;x=0&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+</feed>
