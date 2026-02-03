@@ -25,7 +25,7 @@ If we then multiply this gradient by sensor size, we get a physical distance fro
 
 The units of `sensor_size` and `focal_length` cancel out, so if we want to, we can use millimeters for both. This cancellation also means, that we don't care about the actual sensor size and focal length, more like the resulting FOV. E.g. if we don't know the sensor, but it's possible to 3D track the footage, that's also enough.
 
-> This is all assuming rectilinear projection. So either apply the vignetting to undistorted footage, or distort the vignette.
+> Note that this is all assuming a rectilinear projection and falls apart for any fisheye lenses.
 
 Plug `a` into the main equation `v = cos(a)^4`, and we're done. To get rid of vignette you would divide the footage by `v`, to simulate vignette you would multiply by `v`.
 
@@ -35,7 +35,7 @@ If necessary, the inner `a` can be multiplied up or down to compensate for any r
 
 ---
 
-Hope this was useful. And please, unless you are dealing with some mechanical vignette, no more blurred ellipses from now on! Although to be fair, anamorphic lenses would produce horizontally stretched vignetting.
+Hope this was useful. And please, unless you are dealing with some mechanical vignette, no more blurred ellipses! Although to be fair, anamorphic lenses would produce horizontally stretched vignetting.
 
 I might make a vignette `.fuse` someday, but for now here's at least a `CustomTool` for Fusion (just copy-paste into the node tree):
 
@@ -56,16 +56,8 @@ I might make a vignette `.fuse` someday, but for now here's at least a `CustomTo
                 AlphaExpression = Input { Value = "1", },
                 NameforNumber1 = Input { Value = "Focal Length", },
                 NameforNumber2 = Input { Value = "Sensor Size", },
-                ShowNumber3 = Input { Value = 0, },
-                ShowNumber4 = Input { Value = 0, },
-                ShowNumber5 = Input { Value = 0, },
-                ShowNumber6 = Input { Value = 0, },
-                ShowNumber7 = Input { Value = 0, },
-                ShowNumber8 = Input { Value = 0, },
-                ShowPoint1 = Input { Value = 0, },
-                ShowPoint2 = Input { Value = 0, },
-                ShowPoint3 = Input { Value = 0, },
-                ShowPoint4 = Input { Value = 0, },
+                ShowNumber3 = Input { Value = 0, }, ShowNumber4 = Input { Value = 0, }, ShowNumber5 = Input { Value = 0, }, ShowNumber6 = Input { Value = 0, }, ShowNumber7 = Input { Value = 0, }, ShowNumber8 = Input { Value = 0, },
+                ShowPoint1 = Input { Value = 0, }, ShowPoint2 = Input { Value = 0, }, ShowPoint3 = Input { Value = 0, }, ShowPoint4 = Input { Value = 0, },
             },
             ViewInfo = OperatorInfo { Pos = { 0, 0 } },
         }
@@ -74,4 +66,4 @@ I might make a vignette `.fuse` someday, but for now here's at least a `CustomTo
 }
 ```
 
-> Fusion expects degrees instead of radians for trigonometric functions, but since we just pass the angle from `atan()` to `cos()`, we don't have to worry about that.
+> For whatever reasons, Fusion expects degrees instead of radians for trigonometric functions, but since we just pass the angle from `atan()` to `cos()`, we don't have to worry about it.
