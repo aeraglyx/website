@@ -1,5 +1,8 @@
 base_url = "https://www.aeraglyx.com"
 
+title = "Aeraglyx"
+description = "VFX Artist | Technical Director | Recreational Programmer"
+
 taxonomies = [
     { name = "tags", feed = true, render = true},
 ]
