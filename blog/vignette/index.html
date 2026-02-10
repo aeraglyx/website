@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+        <title>aeraglyx</title>
+        <link rel="stylesheet" href="https://www.aeraglyx.com/css/style.css">
+        <meta name="color-scheme" content="dark">
+    </head>
+
+    <body>
+        <header class="column">
+            <h1>
+                <a href="/">aeraglyx</a>
+            </h1>
+            <nav>
+                <ul>
+                    
+                    <li class=""><a href="/blog/">blog</a></li>
+                    
+                    <li class=""><a href="/vfx/">vfx</a></li>
+                    
+                </ul>
+            </nav>
+        </header>
+        <section class="section">
+            <div class="container column">
+                
+
+<div class="title-section">
+
+    <h1 class="title">Vignette Compensation</h1>
+
+    <div class="subtitle">
+
+        
+        <date>2026-01-05</date>
+        
+
+        
+        <ul class="tags">
+            
+            <li>
+                <a href="https://www.aeraglyx.com/tags/vfx/">vfx</a>
+            </li>
+            
+            <li>
+                <a href="https://www.aeraglyx.com/tags/math/">math</a>
+            </li>
+            
+        </ul>
+        
+
+    </div>
+
+</div>
+
+<p>What if you don't have a reference vignette plate? No problem! If we know the sensor size and focal length (or at least the rough FOV), we have everything necessary for a decent approximation.</p>
+<blockquote>
+<p>We'll be talking about the soft natural vignette here, not the optical or mechanical vignette (where parts of the lens are actually obstructing the view).</p>
+</blockquote>
+<hr />
+<p>Natural vignette is given by:</p>
+<p><code>v = cos(a)^4</code></p>
+<p>Where <code>a</code> is the angle from optical center. To calculate this angle, we first use the normalized screen coordinates <code>x</code> and <code>y</code> to make a radial gradient that goes from 0 in the center to 0.5 at the sides (taking aspect ratio into account):</p>
+<p><code>d = (x - 0.5)^2 + ((y - 0.5) * h/w)^2</code></p>
+<p>If we then multiply this gradient by sensor size, we get a physical distance from the sensor center. We can now imagine a right angle triangle where this distance is the opposite edge, focal length the adjacent edge and <code>a</code> our unknown angle:</p>
+<p><code>a = arctan(sensor_size * d / focal_length)</code></p>
+<p>The units of <code>sensor_size</code> and <code>focal_length</code> cancel out, so if we want to, we can use millimeters for both. This cancellation also means, that we don't care about the actual sensor size and focal length, more like the resulting FOV. E.g. if we don't know the sensor, but it's possible to 3D track the footage, that's also enough.</p>
+<blockquote>
+<p>Note that this is all assuming a rectilinear projection and falls apart for any fisheye lenses.</p>
+</blockquote>
+<p>Plug <code>a</code> into the main equation <code>v = cos(a)^4</code>, and we're done. To get rid of vignette you would divide the footage by <code>v</code>, to simulate vignette you would multiply by <code>v</code>.</p>
+<blockquote>
+<p>The footage needs to be linearized for this to work.</p>
+</blockquote>
+<p>If necessary, the inner <code>a</code> can be multiplied up or down to compensate for any real world inconsistencies.</p>
+<hr />
+<p>Hope this was useful. And please, unless you are dealing with some mechanical vignette, no more blurred ellipses! Although to be fair, anamorphic lenses would produce horizontally stretched vignetting.</p>
+<p>I might make a vignette <code>.fuse</code> someday, but for now here's at least a <code>CustomTool</code> for Fusion (just copy-paste into the node tree):</p>
+<pre><code data-lang="lua">{
+    Tools = ordered() {
+        Vignette = Custom {
+            CtrlWZoom = false,
+            Inputs = {
+                NumberIn1 = Input { Value = 50.0, },
+                NumberIn2 = Input { Value = 36.0, },
+                Intermediate1 = Input { Value = &quot;(x-0.5)^2+((y-0.5)*h/w)^2&quot;, },
+                Intermediate2 = Input { Value = &quot;atan(n2*i1/n1)&quot;, },
+                Intermediate3 = Input { Value = &quot;cos(i2)^4&quot;, },
+                RedExpression = Input { Value = &quot;i3&quot;, },
+                GreenExpression = Input { Value = &quot;i3&quot;, },
+                BlueExpression = Input { Value = &quot;i3&quot;, },
+                AlphaExpression = Input { Value = &quot;1&quot;, },
+                NameforNumber1 = Input { Value = &quot;Focal Length&quot;, },
+                NameforNumber2 = Input { Value = &quot;Sensor Size&quot;, },
+                ShowNumber3 = Input { Value = 0, }, ShowNumber4 = Input { Value = 0, }, ShowNumber5 = Input { Value = 0, }, ShowNumber6 = Input { Value = 0, }, ShowNumber7 = Input { Value = 0, }, ShowNumber8 = Input { Value = 0, },
+                ShowPoint1 = Input { Value = 0, }, ShowPoint2 = Input { Value = 0, }, ShowPoint3 = Input { Value = 0, }, ShowPoint4 = Input { Value = 0, },
+            },
+            ViewInfo = OperatorInfo { Pos = { 0, 0 } },
+        }
+    },
+    ActiveTool = &quot;Vignette&quot;
+}
+</code></pre>
+<blockquote>
+<p>For whatever reasons, Fusion expects degrees instead of radians for trigonometric functions, but since we just pass the angle from <code>atan()</code> to <code>cos()</code>, we don't have to worry about it.</p>
+</blockquote>
+
+
+
+            </div>
+        </section>
+        <footer>
+            <a class="icon-link" href="/">aeraglyx</a>
+            <p>/</p>
+            
+            <a class="icon-link" href="https:&#x2F;&#x2F;github.com&#x2F;aeraglyx">
+                <img class="icon-img" src="/img/icons/github.svg" alt="github">
+            </a>
+            
+            <a class="icon-link" href="https:&#x2F;&#x2F;x.com&#x2F;aeraglyx">
+                <img class="icon-img" src="/img/icons/twitter.svg" alt="twitter">
+            </a>
+            
+            <a class="icon-link" href="https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;aeraglyx&#x2F;">
+                <img class="icon-img" src="/img/icons/linkedin.svg" alt="linkedin">
+            </a>
+            
+        </footer>
+    </body>
+
+</html>
