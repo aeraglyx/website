@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+        <title>aeraglyx</title>
+        <link rel="stylesheet" href="https://www.aeraglyx.com/css/style.css">
+        <meta name="color-scheme" content="dark">
+    </head>
+
+    <body>
+        <header class="column">
+            <h1>
+                <a href="/">aeraglyx</a>
+            </h1>
+            <nav>
+                <ul>
+                    
+                    <li class=""><a href="/blog/">blog</a></li>
+                    
+                    <li class=""><a href="/vfx/">vfx</a></li>
+                    
+                </ul>
+            </nav>
+        </header>
+        <section class="section">
+            <div class="container column">
+                
+
+<div class="title-section">
+
+    <h1 class="title">Edge Grain</h1>
+
+    <div class="subtitle">
+
+        
+        <date>2025-11-11</date>
+        
+
+        
+        <ul class="tags">
+            
+            <li>
+                <a href="https://www.aeraglyx.com/tags/vfx/">vfx</a>
+            </li>
+            
+            <li>
+                <a href="https://www.aeraglyx.com/tags/math/">math</a>
+            </li>
+            
+        </ul>
+        
+
+    </div>
+
+</div>
+
+<p>When merging a grain-free element on top of a grainy footage, we match the grain and that's it, right? Well not quite, by mixing 2 uncorrelated grains, we get weaker grain in the edges. Let's figure out why and how to fix this.</p>
+<p>When we blend multiple noisy signals, the overall noise to signal ratio changes with <code>1 / sqrt(n)</code>, so for 2 signals, that is roughly 0.707. More generally, when combining two signals with different noise strengths, the resulting noise is:</p>
+<p><code>sqrt(s1 ^ 2 + s2 ^ 2)</code></p>
+<p>When linearly interpolating the 2 images, s1 represents the fg alpha, s2 its inverse (the remaining bg grain after the merge). So if we plug in <code>x</code> for s1 (the original alpha), <code>1-x</code> for s2 and plot it, we get a U-curve that showcases the problem.</p>
+<!-- TODO: plot img -->
+<p>But what if we modify <code>x</code> in some way that cancels out the U-curve and gives us a flat response? Let's call this modified alpha <code>x'</code>.</p>
+<p>If we say that s1 is the desired strength based on the original alpha, s2 the inverted alpha and we set it to 1 (representing constant NSR), we get:</p>
+<p><code>1 = sqrt(x' ^ 2 + (1 - x) ^ 2)</code></p>
+<p>Solving for <code>x'</code>:</p>
+<p><code>x' = sqrt(x * (2 - x))</code></p>
+<p>Which is a circle! I just love these kinds of problems.</p>
+<blockquote>
+<p>So in practice, the solution is to add a grain node after the merge, and for the mask use the former function, where <code>x</code> is the fg alpha.</p>
+</blockquote>
+<!-- TODO:  add before/after img-->
+<p>If we want to apply the grain before the premult and merge, we simply divide it by the alpha to get:</p>
+<p><code>sqrt(x * (2 - x)) / x</code></p>
+<p>However, note that this form shoots off to infinity as it approaches <code>x=0</code>.</p>
+
+
+
+            </div>
+        </section>
+        <footer>
+            <a class="icon-link" href="/">aeraglyx</a>
+            <p>/</p>
+            
+            <a class="icon-link" href="https:&#x2F;&#x2F;github.com&#x2F;aeraglyx">
+                <img class="icon-img" src="/img/icons/github.svg" alt="github">
+            </a>
+            
+            <a class="icon-link" href="https:&#x2F;&#x2F;x.com&#x2F;aeraglyx">
+                <img class="icon-img" src="/img/icons/twitter.svg" alt="twitter">
+            </a>
+            
+            <a class="icon-link" href="https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;aeraglyx&#x2F;">
+                <img class="icon-img" src="/img/icons/linkedin.svg" alt="linkedin">
+            </a>
+            
+        </footer>
+    </body>
+
+</html>

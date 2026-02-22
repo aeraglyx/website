@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+        <title>aeraglyx</title>
+        <link rel="stylesheet" href="https://www.aeraglyx.com/css/style.css">
+        <meta name="color-scheme" content="dark">
+    </head>
+
+    <body>
+        <header class="column">
+            <h1>
+                <a href="/">aeraglyx</a>
+            </h1>
+            <nav>
+                <ul>
+                    
+                    <li class=""><a href="/blog/">blog</a></li>
+                    
+                    <li class=""><a href="/vfx/">vfx</a></li>
+                    
+                </ul>
+            </nav>
+        </header>
+        <section class="section">
+            <div class="container column">
+                
+
+<div class="title-section">
+
+    <h1 class="title">Film Grain Approximation</h1>
+
+    <div class="subtitle">
+
+        
+        <date>2026-02-07</date>
+        
+
+        
+        <ul class="tags">
+            
+            <li>
+                <a href="https://www.aeraglyx.com/tags/vfx/">vfx</a>
+            </li>
+            
+            <li>
+                <a href="https://www.aeraglyx.com/tags/math/">math</a>
+            </li>
+            
+        </ul>
+        
+
+    </div>
+
+</div>
+
+<p>It's relatively easy to mimic film grain using Voronoi <a rel="external" href="https://www.youtube.com/watch?v=OXHyQltrkZo">as demonstrated here</a>, but that method is relying on the fact that a ray-tracer is averaging sampled values inside a pixel. And since it's typical to have many grains per pixel, I was wondering if there is a way to approximate this behavior in the compositor without any Monte Carlo shenanigans while preserving most of the nice characteristics.</p>
+<p>Alternative title - <em>Fast Beta Distribution Inverse CDF Approximation</em></p>
+<h2 id="overview">Overview</h2>
+<p>In theory, this is a solved problem, we could just sample the <a rel="external" href="https://en.wikipedia.org/wiki/Beta_distribution">Beta Distribution</a>. It's not a straight forward function though, I tried a few approximations for its Inverse CDF (Wilson-Hilferty, Cornish-Fisher, Peizer-Pratt) but none of them were perfect.</p>
+<p>So my thought was to start with a white noise, convert it to a roughly normally distributed 0.5-centered noise with some variance to set the grain strength, and finally apply a power-like function to the noise so that the average output matches the input.</p>
+<h2 id="the-method">The Method</h2>
+<p>You could start with the <a rel="external" href="https://en.wikipedia.org/wiki/Normal_distribution">Normal Distribution</a> (limit of Beta for small <code>σ</code> and non-extreme <code>p</code>), but since its <a rel="external" href="https://en.wikipedia.org/wiki/Quantile_function">Inverse CDF</a> is unbound, you would get some clipped "fireflies" and it will be impossible to recover values near the bounds, so it might be wise to pass it through some sigmoid like <code>tanh()</code>. In the end however I settled for a distribution with this PPF:</p>
+<p><code>U ^ s / (U ^ s + (1 - U) ^ s)</code></p>
+<p>Where <code>U</code> is uniformly distributed noise in the range 0-1. To more or less match the corresponding standard deviation, pass <code>2 * σ</code> into <code>s</code> (valid for small <code>σ</code>). This will control the final grain strength (more on this later). Sadly it's a bit different to Beta or Normal PPF, but at least it's easily computable and already bound to 0-1.</p>
+<blockquote>
+<p>Inverse CDF (a.k.a. PPF) is what you need to convert 0-1 white noise into a given distribution.</p>
+</blockquote>
+<hr />
+<p>Moving the noise to the desired value while keeping it bound to 0-1 might sound like the perfect job for a power function, but it complicates a few things (e.g. behaves differently near 0 and 1), so instead I chose this:</p>
+<p><code>f_power(x, g) = x / (g - (g - 1) * x)</code></p>
+<p>You might imagine choosing some <code>g</code> such that after applying the function to 0.5, the output will match the desired value. That's not difficult to solve, but we cannot assume that after bending the 0.5-centered noise to the desired value, the final mean will also become that value.</p>
+<p>For <code>σ=0</code>, we get <code>g = (1 - x) / x</code>, but for larger <code>σ</code> it's different, possibly without a closed form. I have approximated it by gradually exponentiating the simple form with some number based on <code>σ</code>:</p>
+<p><code>g = ((1 - x) / x) ^ pow_corr(σ)</code></p>
+<p>I put way too much effort into estimating the ideal power, but in the end I simply eye-balled good <code>pow_corr()</code> values for various strengths that would work well across the input values, plotted it, and approximated it:</p>
+<p><code>pow_corr(σ) = sqrt(4 * σ^2 + 0.2 * σ + 1)</code></p>
+<p>This is dependent on the distribution used. Away from 0.5, the noise loses some apparent strength, so to roughly compensate, I multiplied <code>σ</code> by:</p>
+<p><code>1 + 3 * (x - 0.5) ^ 2</code></p>
+<p>Now after plugging both the 0.5-centered noise and the power <code>g</code> into <code>f_power()</code>, we get a pretty convincing film grain.</p>
+<hr />
+<p>For this specific distribution / "power" combination, we get a beautiful simplification - we can skip the "power" step completely by modifying the inverse CDF to take <code>g</code> directly:</p>
+<p><code>U ^ s / (U ^ s + g * (1 - U) ^ s)</code></p>
+<h2 id="calculating-the-standard-deviation">Calculating the Standard Deviation</h2>
+<p>Thanks to <a rel="external" href="https://en.wikipedia.org/wiki/Bernoulli_trial">Bernoulli Trial</a>, when sampling a large area of random boolean cells, the standard deviation should be roughly <code>0.5 * d</code>, where <code>d</code> is the grain size in pixels. The final standard deviation will be:</p>
+<p><code>σ = 0.5 * grain_size_m * resolution_x / sensor_size</code></p>
+<p>Then we could either plug in the actual grain size (e.g. 1 µm), or approximate it from the ISO. In general, more sensitive film will have larger grains. To get the grain size in meters:</p>
+<p><code>0.05 * sqrt(ISO) * 1e-6</code></p>
+<h2 id="discussion">Discussion</h2>
+<p>I'm quite happy with the results, but there are a few limitations (let's call it future work):</p>
+<ul>
+<li>Currently there is no correlation between neighboring pixels, which should be present for large <code>σ</code>. Perhaps it could be enough to blur the output based on the <code>σ</code>.</li>
+<li>It's increasingly less accurate with large standard deviations (like <code>σ &gt; 0.5</code>). Although for typical strengths there's virtually no change in the overall luminance.</li>
+<li>It's a bit off from the true Beta Distribution.</li>
+</ul>
+<p>Also, I'm wondering if it wouldn't be better to just calculate the Beta distribution inverse CDF using some numerical method. Though I believe there is something nice about the simplicity of the presented algorithm.</p>
+<p>To get colored grain, you could apply an independent grain to each channel and do some mixing between different seeds to get a "saturation" value. When mixing noise signals, you should compensate for the diminishing "in-between" strength, similar to <a href="../edge-grain">this problem</a>. Though I'm sure there could be much better ways like simulating the actual film layers and filters.</p>
+
+
+
+            </div>
+        </section>
+        <footer>
+            <a class="icon-link" href="/">aeraglyx</a>
+            <p>/</p>
+            
+            <a class="icon-link" href="https:&#x2F;&#x2F;github.com&#x2F;aeraglyx">
+                <img class="icon-img" src="/img/icons/github.svg" alt="github">
+            </a>
+            
+            <a class="icon-link" href="https:&#x2F;&#x2F;x.com&#x2F;aeraglyx">
+                <img class="icon-img" src="/img/icons/twitter.svg" alt="twitter">
+            </a>
+            
+            <a class="icon-link" href="https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;aeraglyx&#x2F;">
+                <img class="icon-img" src="/img/icons/linkedin.svg" alt="linkedin">
+            </a>
+            
+        </footer>
+    </body>
+
+</html>

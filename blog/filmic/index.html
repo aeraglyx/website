@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+        <title>aeraglyx</title>
+        <link rel="stylesheet" href="https://www.aeraglyx.com/css/style.css">
+        <meta name="color-scheme" content="dark">
+    </head>
+
+    <body>
+        <header class="column">
+            <h1>
+                <a href="/">aeraglyx</a>
+            </h1>
+            <nav>
+                <ul>
+                    
+                    <li class=""><a href="/blog/">blog</a></li>
+                    
+                    <li class=""><a href="/vfx/">vfx</a></li>
+                    
+                </ul>
+            </nav>
+        </header>
+        <section class="section">
+            <div class="container column">
+                
+
+<div class="title-section">
+
+    <h1 class="title">Filmic Curves</h1>
+
+    <div class="subtitle">
+
+        
+        <date>2026-02-22</date>
+        
+
+        
+        <ul class="tags">
+            
+            <li>
+                <a href="https://www.aeraglyx.com/tags/vfx/">vfx</a>
+            </li>
+            
+            <li>
+                <a href="https://www.aeraglyx.com/tags/math/">math</a>
+            </li>
+            
+        </ul>
+        
+
+    </div>
+
+</div>
+
+<p>Set of functions for tone-mapping, contrast and highlight rolloff to more or less imitate the "film look". We'll be both expecting and outputting "linear light", you (or your DCC) should apply the ODTF as usual.</p>
+<h2 id="tone-mapping">Tone Mapping</h2>
+<p>Let's start with one of the most basic tone-mappers - Reinhard:</p>
+<p><code>x / (1 + x)</code></p>
+<p>To control the amount of tone-mapping, we can modify it as such:</p>
+<p><code>x / (1 + x ^ (1 / c)) ^ c</code></p>
+<p>Now we get sharp clamping as <code>c</code> approaches 0, Reinhard at <code>c=1</code> and anything in between (or beyond).</p>
+<p>We don't have unlimited precision, so low <code>c</code> together with high <code>x</code> can produce visual artifacts. At least in Blender, there seems to be a clear relationship, so we can for example give <code>c</code> a lower bound of roughly <code>0.00785 * log2(x)</code>, or set the output to 1.0 when <code>c</code> is lower than the said threshold.</p>
+<p>If we want to pin the curve at [0.5, 0.5], we can multiply the original <code>x</code> by some factor <code>q</code>:</p>
+<p><code>q = 1 / (1 - 0.5 ^ (1 / c)) ^ c</code></p>
+<p>To figure this out, I took the inverse of the current tone-mapping function and evaluated it at 0.5, which in comparison to 0.5 tells us by how much to stretch <code>x</code>. Abstracting <code>q</code> to get a "pivot" parameter is left as an exercise for the reader.</p>
+<p>However, this compensation might complicate reversing the final function. Perhaps the pinning is not worth it.</p>
+<p>Another useful thing can be setting the clipping point (infinity by default). To do that, we'll add an additional correction coefficient <code>a = 1 - l ^ (-1 / c)</code> inside:</p>
+<!-- `x / (1 + (1 - l ^ (-1 / c)) * x ^ (1 / c)) ^ c` -->
+<p><code>x / (1 + a * x ^ (1 / c)) ^ c</code></p>
+<p>To get the inverse, simply change the plus sign into a minus. This is especially useful for linearizing footage with unknown baked-in grade.</p>
+<p>Here is a <a rel="external" href="https://www.desmos.com/calculator/zi3tjqfilb">desmos demonstration</a>.</p>
+<h2 id="contrast">Contrast</h2>
+<p>You could think of contrast as an S-curve. I really like this well-behaved function (first saw it mentioned by Luca Rood on Twitter):</p>
+<p><code>x^g / (x^g + (1 - x)^g)</code></p>
+<p>Unlike smoothstep, we can easily control the "strength" with <code>g</code>. For convenience, we can calculate it from <code>a</code> using some inverse sigmoid function like <code>tan()</code> to compress the range:</p>
+<p><code>g = tan(0.125 * tau * (a + 1))</code></p>
+<p>Even though this is a lovely S-curve, we don't actually need it. Turns out, applying a power function before Reinhard is equivalent to Reinhard and then this S-curve! I believe it's the same thing as the Naka-Rushton and Michaelis-Menten functions.</p>
+<p>To set some pivot when pre-applying the power function (to avoid darkening the 0-1 range when doing <code>x^g</code>), you can modify it as:</p>
+<p><code>p * (x / p) ^ g</code></p>
+<p>You can also set different powers per channel (for example based on some temp/tint) to easily achieve effects like the <em>Teal and Orange</em> look.</p>
+<h2 id="highlight-falloff">Highlight Falloff</h2>
+<p>Applying the above per channel kinda sucks and you'll get the <em>Notorious Six</em>. A somewhat better approach is desaturating the highlights first with:</p>
+<p><code>saturation = 1.0 - 0.5 ^ (luminance * strength)</code></p>
+<h2 id="blackpoint-whitepoint">Blackpoint / Whitepoint</h2>
+<p>Probably not even worth mentioning, but you can remap the 0-1 channel outputs to some other range to for example make highlights approach yellow instead of white, lift the blacks etc.</p>
+<h2 id="final-notes">Final Notes</h2>
+<p>There is still a lot more to be explored. I'm not saying this is the best way, it's certainly not very scientific (you might want to look into AgX for that), but compared to some horrendous stuff I've seen people do, it's usually good enough if you just need some artistic control.</p>
+<p>For reference, here's the tone-mapping itself as a <code>CustomTool</code> in Fusion:</p>
+<pre><code>{
+    Tools = ordered() {
+        ToneMapping = Custom {
+            CtrlWZoom = false,
+            Inputs = {
+                NumberIn1 = Input { Value = 1, },
+                NumberIn2 = Input { Value = 100, },
+                Intermediate1 = Input { Value = &quot;1 - n2 ^ (-1 / n1)&quot;, },
+                RedExpression = Input { Value = &quot;c1 / (1 + i1 * c1 ^ (1 / n1)) ^ n1&quot;, },
+                GreenExpression = Input { Value = &quot;c1 / (1 + i1 * c1 ^ (1 / n1)) ^ n1&quot;, },
+                BlueExpression = Input { Value = &quot;c1 / (1 + i1 * c1 ^ (1 / n1)) ^ n1&quot;, },
+                NameforNumber1 = Input { Value = &quot;Strength&quot;, },
+                NameforNumber2 = Input { Value = &quot;Limit&quot;, },
+                ShowNumber3 = Input { Value = 0, }, ShowNumber4 = Input { Value = 0, }, ShowNumber5 = Input { Value = 0, }, ShowNumber6 = Input { Value = 0, }, ShowNumber7 = Input { Value = 0, }, ShowNumber8 = Input { Value = 0, },
+                ShowPoint1 = Input { Value = 0, }, ShowPoint2 = Input { Value = 0, }, ShowPoint3 = Input { Value = 0, }, ShowPoint4 = Input { Value = 0, }
+            },
+            ViewInfo = OperatorInfo { Pos = { 0, 0 } },
+        }
+    },
+    ActiveTool = &quot;ToneMapping&quot;
+}
+</code></pre>
+<h2 id="useful-links">Useful Links</h2>
+<ul>
+<li><a rel="external" href="https://hg2dc.com/">The Hitchhiker's Guide to Digital Colour</a></li>
+</ul>
+
+
+
+            </div>
+        </section>
+        <footer>
+            <a class="icon-link" href="/">aeraglyx</a>
+            <p>/</p>
+            
+            <a class="icon-link" href="https:&#x2F;&#x2F;github.com&#x2F;aeraglyx">
+                <img class="icon-img" src="/img/icons/github.svg" alt="github">
+            </a>
+            
+            <a class="icon-link" href="https:&#x2F;&#x2F;x.com&#x2F;aeraglyx">
+                <img class="icon-img" src="/img/icons/twitter.svg" alt="twitter">
+            </a>
+            
+            <a class="icon-link" href="https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;aeraglyx&#x2F;">
+                <img class="icon-img" src="/img/icons/linkedin.svg" alt="linkedin">
+            </a>
+            
+        </footer>
+    </body>
+
+</html>
