@@ -1,12 +1,11 @@
 +++
 title = "Filmic Curves"
-date = 2026-02-11
+date = 2026-02-22
 taxonomies.tags = ["vfx", "math"]
-draft = true
 +++
 
 
-Set of functions for tone-mapping, contrast and highlight rolloff to more or less imitate the "film look". We'll be both expecting and outputting "linear light", you or your DCC software should apply the ODTF as usual.
+Set of functions for tone-mapping, contrast and highlight rolloff to more or less imitate the "film look". We'll be both expecting and outputting "linear light", you (or your DCC) should apply the ODTF as usual.
 
 
 ## Tone Mapping
@@ -29,7 +28,16 @@ If we want to pin the curve at [0.5, 0.5], we can multiply the original `x` by s
 
 To figure this out, I took the inverse of the current tone-mapping function and evaluated it at 0.5, which in comparison to 0.5 tells us by how much to stretch `x`. Abstracting `q` to get a "pivot" parameter is left as an exercise for the reader.
 
-However, this compensation might complicate reversing the final function, if that's something you require. Perhaps the pinning is not worth it.
+However, this compensation might complicate reversing the final function. Perhaps the pinning is not worth it.
+
+Another useful thing can be setting the clipping point (infinity by default). To do that, we'll add an additional correction coefficient `a = 1 - l ^ (-1 / c)` inside:
+
+<!-- `x / (1 + (1 - l ^ (-1 / c)) * x ^ (1 / c)) ^ c` -->
+`x / (1 + a * x ^ (1 / c)) ^ c`
+
+To get the inverse, simply change the plus sign into a minus. This is especially useful for linearizing footage with unknown baked-in grade.
+
+Here is a [desmos demonstration](https://www.desmos.com/calculator/zi3tjqfilb).
 
 
 ## Contrast
@@ -44,11 +52,11 @@ Unlike smoothstep, we can easily control the "strength" with `g`. For convenienc
 
 Even though this is a lovely S-curve, we don't actually need it. Turns out, applying a power function before Reinhard is equivalent to Reinhard and then this S-curve! I believe it's the same thing as the Naka-Rushton and Michaelis-Menten functions.
 
-To set some pivot when pre-applying the power function (to avoid darkening the range 0-1 when doing `x^g`), you can modify it as:
+To set some pivot when pre-applying the power function (to avoid darkening the 0-1 range when doing `x^g`), you can modify it as:
 
 `p * (x / p) ^ g`
 
-You can even set different powers per channel (for example based on some temp/tint) to easily achieve effects like the *Teal and Orange* look.
+You can also set different powers per channel (for example based on some temp/tint) to easily achieve effects like the *Teal and Orange* look.
 
 
 ## Highlight Falloff
@@ -58,7 +66,7 @@ Applying the above per channel kinda sucks and you'll get the *Notorious Six*. A
 `saturation = 1.0 - 0.5 ^ (luminance * strength)`
 
 
-## Blackpoint and Whitepoint
+## Blackpoint / Whitepoint
 
 Probably not even worth mentioning, but you can remap the 0-1 channel outputs to some other range to for example make highlights approach yellow instead of white, lift the blacks etc.
 
@@ -66,6 +74,32 @@ Probably not even worth mentioning, but you can remap the 0-1 channel outputs to
 ## Final Notes
 
 There is still a lot more to be explored. I'm not saying this is the best way, it's certainly not very scientific (you might want to look into AgX for that), but compared to some horrendous stuff I've seen people do, it's usually good enough if you just need some artistic control.
+
+For reference, here's the tone-mapping itself as a `CustomTool` in Fusion:
+
+```
+{
+    Tools = ordered() {
+        ToneMapping = Custom {
+            CtrlWZoom = false,
+            Inputs = {
+                NumberIn1 = Input { Value = 1, },
+                NumberIn2 = Input { Value = 100, },
+                Intermediate1 = Input { Value = "1 - n2 ^ (-1 / n1)", },
+                RedExpression = Input { Value = "c1 / (1 + i1 * c1 ^ (1 / n1)) ^ n1", },
+                GreenExpression = Input { Value = "c1 / (1 + i1 * c1 ^ (1 / n1)) ^ n1", },
+                BlueExpression = Input { Value = "c1 / (1 + i1 * c1 ^ (1 / n1)) ^ n1", },
+                NameforNumber1 = Input { Value = "Strength", },
+                NameforNumber2 = Input { Value = "Limit", },
+                ShowNumber3 = Input { Value = 0, }, ShowNumber4 = Input { Value = 0, }, ShowNumber5 = Input { Value = 0, }, ShowNumber6 = Input { Value = 0, }, ShowNumber7 = Input { Value = 0, }, ShowNumber8 = Input { Value = 0, },
+                ShowPoint1 = Input { Value = 0, }, ShowPoint2 = Input { Value = 0, }, ShowPoint3 = Input { Value = 0, }, ShowPoint4 = Input { Value = 0, }
+            },
+            ViewInfo = OperatorInfo { Pos = { 0, 0 } },
+        }
+    },
+    ActiveTool = "ToneMapping"
+}
+```
 
 
 ## Useful Links
