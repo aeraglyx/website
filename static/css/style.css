@@ -19,7 +19,7 @@
     --color-deep: #1a1a1a;
     --color-bg: #202020;
     --color-bg-2: #282828;
-    --color-smol: #363636;
+    --color-smol: #383838;
     --color-dim: #525252;
     --color-meh: #8b8b8b;
     --color-fg: #c8c8c8;
@@ -111,6 +111,7 @@ li > code {
     margin: 0 -0.5ch;
     border-radius: .38em;
     border: 2px solid var(--color-smol);
+    background-color: var(--color-bg-2);
     box-shadow: 0.25rem 0.25rem var(--color-deep);
 }
 
@@ -268,7 +269,7 @@ nav ul {
 
 nav > ul > li {
     float: left;
-    margin-left: 1.1em;
+    margin-left: 1.2em;
 }
 
 nav > ul > li::marker {
@@ -291,7 +292,7 @@ nav > ul > li.active {
 a {
     color: inherit;
     text-decoration: underline solid 3px var(--color-dim);
-    text-underline-offset: 2px;
+    text-underline-offset: 3px;
     transition: text-decoration-color var(--transition);
 }
 
@@ -338,8 +339,8 @@ a {
 }
 
 hr {
-    margin: 4.0rem auto;
-    width: 33%;
+    margin: 3.75rem auto;
+    width: 45%;
     height: 0px;
     border: none;
     border-top: solid 2px var(--color-smol);
@@ -353,7 +354,7 @@ hr::after {
     padding: 0 0.5rem;
     position: relative;
     top: -13px;
-    color: var(--color-smol);
+    color: var(--color-dim);
     background: var(--color-bg);
 }
 
