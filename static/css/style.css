@@ -165,7 +165,7 @@ li > code {
 .page-list-item {
     display: flex;
     flex-direction: column;
-    margin-top: 2.5rem;
+    margin-top: 3.0rem;
     border-radius: 1.0rem;
     background-color: var(--color-bg);
 }
@@ -174,7 +174,7 @@ li > code {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    margin-bottom: 0.6rem;
+    margin-bottom: 0.5rem;
 }
 
 .page-title a {
@@ -276,19 +276,6 @@ nav > ul > li::marker {
     content: "";
 }
 
-nav > ul > li > a {
-    color: var(--color-fg);
-    text-underline-offset: 3px;
-}
-
-header > h1 > a {
-    text-underline-offset: 3px;
-}
-
-nav > ul > li.active {
-    color: var(--color-bg);
-}
-
 a {
     color: inherit;
     text-decoration: underline solid 3px var(--color-dim);
@@ -321,10 +308,10 @@ a {
 
 .tags > li > a {
     margin: 0;
-    padding: 0.15rem 0.4rem;
+    padding: 0.15rem 0.3rem;
     text-decoration: none;
-    border-radius: 0.5rem;
-    border: solid 3px var(--color-smol);
+    border-radius: 0.4rem;
+    border: solid 2px var(--color-smol);
     transition: border-color var(--transition);
 }
 
@@ -339,7 +326,7 @@ a {
 }
 
 hr {
-    margin: 3.75rem auto;
+    margin: 3.5rem auto;
     width: 45%;
     height: 0px;
     border: none;
