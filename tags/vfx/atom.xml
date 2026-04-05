@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title>Aeraglyx - vfx</title>
+    <subtitle>VFX Artist | Technical Director | Recreational Programmer</subtitle>
+    <link rel="self" type="application/atom+xml" href="https://www.aeraglyx.com/tags/vfx/atom.xml"/>
+    <link rel="alternate" type="text/html" href="https://www.aeraglyx.com"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2026-02-22T00:00:00+00:00</updated>
+    <id>https://www.aeraglyx.com/tags/vfx/atom.xml</id>
+    <entry xml:lang="en">
+        <title>Filmic Curves</title>
+        <published>2026-02-22T00:00:00+00:00</published>
+        <updated>2026-02-22T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://www.aeraglyx.com/blog/filmic/"/>
+        <id>https://www.aeraglyx.com/blog/filmic/</id>
+        
+        <content type="html" xml:base="https://www.aeraglyx.com/blog/filmic/">&lt;p&gt;Set of functions for tone-mapping, contrast and highlight rolloff to more or less imitate the &quot;film look&quot;. We&#x27;ll be both expecting and outputting &quot;linear light&quot;, you (or your DCC) should apply the ODTF as usual.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;tone-mapping&quot;&gt;Tone Mapping&lt;&#x2F;h2&gt;
+&lt;p&gt;Let&#x27;s start with one of the most basic tone-mappers - Reinhard:&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;x &#x2F; (1 + x)&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;To control the amount of tone-mapping, we can modify it as such:&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;x &#x2F; (1 + x ^ (1 &#x2F; c)) ^ c&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;Now we get sharp clamping as &lt;code&gt;c&lt;&#x2F;code&gt; approaches 0, Reinhard at &lt;code&gt;c=1&lt;&#x2F;code&gt; and anything in between (or beyond).&lt;&#x2F;p&gt;
+&lt;p&gt;We don&#x27;t have unlimited precision, so low &lt;code&gt;c&lt;&#x2F;code&gt; together with high &lt;code&gt;x&lt;&#x2F;code&gt; can produce visual artifacts. At least in Blender, there seems to be a clear relationship, so we can for example give &lt;code&gt;c&lt;&#x2F;code&gt; a lower bound of roughly &lt;code&gt;0.00785 * log2(x)&lt;&#x2F;code&gt;, or set the output to 1.0 when &lt;code&gt;c&lt;&#x2F;code&gt; is lower than the said threshold.&lt;&#x2F;p&gt;
+&lt;p&gt;If we want to pin the curve at [0.5, 0.5], we can multiply the original &lt;code&gt;x&lt;&#x2F;code&gt; by some factor &lt;code&gt;q&lt;&#x2F;code&gt;:&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;q = 1 &#x2F; (1 - 0.5 ^ (1 &#x2F; c)) ^ c&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;To figure this out, I took the inverse of the current tone-mapping function and evaluated it at 0.5, which in comparison to 0.5 tells us by how much to stretch &lt;code&gt;x&lt;&#x2F;code&gt;. Abstracting &lt;code&gt;q&lt;&#x2F;code&gt; to get a &quot;pivot&quot; parameter is left as an exercise for the reader.&lt;&#x2F;p&gt;
+&lt;p&gt;However, this compensation might complicate reversing the final function. Perhaps the pinning is not worth it.&lt;&#x2F;p&gt;
+&lt;p&gt;Another useful thing can be setting the clipping point (infinity by default). To do that, we&#x27;ll add an additional correction coefficient &lt;code&gt;a = 1 - l ^ (-1 &#x2F; c)&lt;&#x2F;code&gt; inside:&lt;&#x2F;p&gt;
+&lt;!-- `x &#x2F; (1 + (1 - l ^ (-1 &#x2F; c)) * x ^ (1 &#x2F; c)) ^ c` --&gt;
+&lt;p&gt;&lt;code&gt;x &#x2F; (1 + a * x ^ (1 &#x2F; c)) ^ c&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;To get the inverse, simply change the plus sign into a minus. This is especially useful for linearizing footage with unknown baked-in grade.&lt;&#x2F;p&gt;
+&lt;p&gt;Here is a &lt;a rel=&quot;external&quot; href=&quot;https:&#x2F;&#x2F;www.desmos.com&#x2F;calculator&#x2F;zi3tjqfilb&quot;&gt;desmos demonstration&lt;&#x2F;a&gt;.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;contrast&quot;&gt;Contrast&lt;&#x2F;h2&gt;
+&lt;p&gt;You could think of contrast as an S-curve. I really like this well-behaved function (first saw it mentioned by Luca Rood on Twitter):&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;x^g &#x2F; (x^g + (1 - x)^g)&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;Unlike smoothstep, we can easily control the &quot;strength&quot; with &lt;code&gt;g&lt;&#x2F;code&gt;. For convenience, we can calculate it from &lt;code&gt;a&lt;&#x2F;code&gt; using some inverse sigmoid function like &lt;code&gt;tan()&lt;&#x2F;code&gt; to compress the range:&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;g = tan(0.125 * tau * (a + 1))&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;Even though this is a lovely S-curve, we don&#x27;t actually need it. Turns out, applying a power function before Reinhard is equivalent to Reinhard and then this S-curve! I believe it&#x27;s the same thing as the Naka-Rushton and Michaelis-Menten functions.&lt;&#x2F;p&gt;
+&lt;p&gt;To set some pivot when pre-applying the power function (to avoid darkening the 0-1 range when doing &lt;code&gt;x^g&lt;&#x2F;code&gt;), you can modify it as:&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;p * (x &#x2F; p) ^ g&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;You can also set different powers per channel (for example based on some temp&#x2F;tint) to easily achieve effects like the &lt;em&gt;Teal and Orange&lt;&#x2F;em&gt; look.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;highlight-falloff&quot;&gt;Highlight Falloff&lt;&#x2F;h2&gt;
+&lt;p&gt;Applying the above per channel kinda sucks and you&#x27;ll get the &lt;em&gt;Notorious Six&lt;&#x2F;em&gt;. A somewhat better approach is desaturating the highlights first with:&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;saturation = 1.0 - 0.5 ^ (luminance * strength)&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;blackpoint-whitepoint&quot;&gt;Blackpoint &#x2F; Whitepoint&lt;&#x2F;h2&gt;
+&lt;p&gt;Probably not even worth mentioning, but you can remap the 0-1 channel outputs to some other range to for example make highlights approach yellow instead of white, lift the blacks etc.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;final-notes&quot;&gt;Final Notes&lt;&#x2F;h2&gt;
+&lt;p&gt;There is still a lot more to be explored. I&#x27;m not saying this is the best way, it&#x27;s certainly not very scientific (you might want to look into AgX for that), but compared to some horrendous stuff I&#x27;ve seen people do, it&#x27;s usually good enough if you just need some artistic control.&lt;&#x2F;p&gt;
+&lt;p&gt;For reference, here&#x27;s the tone-mapping itself as a &lt;code&gt;CustomTool&lt;&#x2F;code&gt; in Fusion:&lt;&#x2F;p&gt;
+&lt;pre&gt;&lt;code&gt;{
+    Tools = ordered() {
+        ToneMapping = Custom {
+            CtrlWZoom = false,
+            Inputs = {
+                NumberIn1 = Input { Value = 1, },
+                NumberIn2 = Input { Value = 100, },
+                Intermediate1 = Input { Value = &amp;quot;1 - n2 ^ (-1 &#x2F; n1)&amp;quot;, },
+                RedExpression = Input { Value = &amp;quot;c1 &#x2F; (1 + i1 * c1 ^ (1 &#x2F; n1)) ^ n1&amp;quot;, },
+                GreenExpression = Input { Value = &amp;quot;c1 &#x2F; (1 + i1 * c1 ^ (1 &#x2F; n1)) ^ n1&amp;quot;, },
+                BlueExpression = Input { Value = &amp;quot;c1 &#x2F; (1 + i1 * c1 ^ (1 &#x2F; n1)) ^ n1&amp;quot;, },
+                NameforNumber1 = Input { Value = &amp;quot;Strength&amp;quot;, },
+                NameforNumber2 = Input { Value = &amp;quot;Limit&amp;quot;, },
+                ShowNumber3 = Input { Value = 0, }, ShowNumber4 = Input { Value = 0, }, ShowNumber5 = Input { Value = 0, }, ShowNumber6 = Input { Value = 0, }, ShowNumber7 = Input { Value = 0, }, ShowNumber8 = Input { Value = 0, },
+                ShowPoint1 = Input { Value = 0, }, ShowPoint2 = Input { Value = 0, }, ShowPoint3 = Input { Value = 0, }, ShowPoint4 = Input { Value = 0, }
+            },
+            ViewInfo = OperatorInfo { Pos = { 0, 0 } },
+        }
+    },
+    ActiveTool = &amp;quot;ToneMapping&amp;quot;
+}
+&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h2 id=&quot;useful-links&quot;&gt;Useful Links&lt;&#x2F;h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a rel=&quot;external&quot; href=&quot;https:&#x2F;&#x2F;hg2dc.com&#x2F;&quot;&gt;The Hitchhiker&#x27;s Guide to Digital Colour&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Film Grain Approximation</title>
+        <published>2026-02-07T00:00:00+00:00</published>
+        <updated>2026-02-07T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://www.aeraglyx.com/blog/film-grain/"/>
+        <id>https://www.aeraglyx.com/blog/film-grain/</id>
+        
+        <content type="html" xml:base="https://www.aeraglyx.com/blog/film-grain/">&lt;p&gt;It&#x27;s relatively easy to mimic film grain using Voronoi &lt;a rel=&quot;external&quot; href=&quot;https:&#x2F;&#x2F;www.youtube.com&#x2F;watch?v=OXHyQltrkZo&quot;&gt;as demonstrated here&lt;&#x2F;a&gt;, but that method is relying on the fact that a ray-tracer is averaging sampled values inside a pixel. And since it&#x27;s typical to have many grains per pixel, I was wondering if there is a way to approximate this behavior in the compositor without any Monte Carlo shenanigans while preserving most of the nice characteristics.&lt;&#x2F;p&gt;
+&lt;p&gt;Alternative title - &lt;em&gt;Fast Beta Distribution Inverse CDF Approximation&lt;&#x2F;em&gt;&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;overview&quot;&gt;Overview&lt;&#x2F;h2&gt;
+&lt;p&gt;In theory, this is a solved problem, we could just sample the &lt;a rel=&quot;external&quot; href=&quot;https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Beta_distribution&quot;&gt;Beta Distribution&lt;&#x2F;a&gt;. It&#x27;s not a straight forward function though, I tried a few approximations for its Inverse CDF (Wilson-Hilferty, Cornish-Fisher, Peizer-Pratt) but none of them were perfect.&lt;&#x2F;p&gt;
+&lt;p&gt;So my thought was to start with a white noise, convert it to a roughly normally distributed 0.5-centered noise with some variance to set the grain strength, and finally apply a power-like function to the noise so that the average output matches the input.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;the-method&quot;&gt;The Method&lt;&#x2F;h2&gt;
+&lt;p&gt;You could start with the &lt;a rel=&quot;external&quot; href=&quot;https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Normal_distribution&quot;&gt;Normal Distribution&lt;&#x2F;a&gt; (limit of Beta for small &lt;code&gt;σ&lt;&#x2F;code&gt; and non-extreme &lt;code&gt;p&lt;&#x2F;code&gt;), but since its &lt;a rel=&quot;external&quot; href=&quot;https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Quantile_function&quot;&gt;Inverse CDF&lt;&#x2F;a&gt; is unbound, you would get some clipped &quot;fireflies&quot; and it will be impossible to recover values near the bounds, so it might be wise to pass it through some sigmoid like &lt;code&gt;tanh()&lt;&#x2F;code&gt;. In the end however I settled for a distribution with this PPF:&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;U ^ s &#x2F; (U ^ s + (1 - U) ^ s)&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;Where &lt;code&gt;U&lt;&#x2F;code&gt; is uniformly distributed noise in the range 0-1. To more or less match the corresponding standard deviation, pass &lt;code&gt;2 * σ&lt;&#x2F;code&gt; into &lt;code&gt;s&lt;&#x2F;code&gt; (valid for small &lt;code&gt;σ&lt;&#x2F;code&gt;). This will control the final grain strength (more on this later). Sadly it&#x27;s a bit different to Beta or Normal PPF, but at least it&#x27;s easily computable and already bound to 0-1.&lt;&#x2F;p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Inverse CDF (a.k.a. PPF) is what you need to convert 0-1 white noise into a given distribution.&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;Moving the noise to the desired value while keeping it bound to 0-1 might sound like the perfect job for a power function, but it complicates a few things (e.g. behaves differently near 0 and 1), so instead I chose this:&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;f_power(x, g) = x &#x2F; (g - (g - 1) * x)&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;You might imagine choosing some &lt;code&gt;g&lt;&#x2F;code&gt; such that after applying the function to 0.5, the output will match the desired value. That&#x27;s not difficult to solve, but we cannot assume that after bending the 0.5-centered noise to the desired value, the final mean will also become that value.&lt;&#x2F;p&gt;
+&lt;p&gt;For &lt;code&gt;σ=0&lt;&#x2F;code&gt;, we get &lt;code&gt;g = (1 - x) &#x2F; x&lt;&#x2F;code&gt;, but for larger &lt;code&gt;σ&lt;&#x2F;code&gt; it&#x27;s different, possibly without a closed form. I have approximated it by gradually exponentiating the simple form with some number based on &lt;code&gt;σ&lt;&#x2F;code&gt;:&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;g = ((1 - x) &#x2F; x) ^ pow_corr(σ)&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;I put way too much effort into estimating the ideal power, but in the end I simply eye-balled good &lt;code&gt;pow_corr()&lt;&#x2F;code&gt; values for various strengths that would work well across the input values, plotted it, and approximated it:&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;pow_corr(σ) = sqrt(4 * σ^2 + 0.2 * σ + 1)&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;This is dependent on the distribution used. Away from 0.5, the noise loses some apparent strength, so to roughly compensate, I multiplied &lt;code&gt;σ&lt;&#x2F;code&gt; by:&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;1 + 3 * (x - 0.5) ^ 2&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;Now after plugging both the 0.5-centered noise and the power &lt;code&gt;g&lt;&#x2F;code&gt; into &lt;code&gt;f_power()&lt;&#x2F;code&gt;, we get a pretty convincing film grain.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;For this specific distribution &#x2F; &quot;power&quot; combination, we get a beautiful simplification - we can skip the &quot;power&quot; step completely by modifying the inverse CDF to take &lt;code&gt;g&lt;&#x2F;code&gt; directly:&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;U ^ s &#x2F; (U ^ s + g * (1 - U) ^ s)&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;calculating-the-standard-deviation&quot;&gt;Calculating the Standard Deviation&lt;&#x2F;h2&gt;
+&lt;p&gt;Thanks to &lt;a rel=&quot;external&quot; href=&quot;https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Bernoulli_trial&quot;&gt;Bernoulli Trial&lt;&#x2F;a&gt;, when sampling a large area of random boolean cells, the standard deviation should be roughly &lt;code&gt;0.5 * d&lt;&#x2F;code&gt;, where &lt;code&gt;d&lt;&#x2F;code&gt; is the grain size in pixels. The final standard deviation will be:&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;σ = 0.5 * grain_size_m * resolution_x &#x2F; sensor_size&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;Then we could either plug in the actual grain size (e.g. 1 µm), or approximate it from the ISO. In general, more sensitive film will have larger grains. To get the grain size in meters:&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;0.05 * sqrt(ISO) * 1e-6&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;discussion&quot;&gt;Discussion&lt;&#x2F;h2&gt;
+&lt;p&gt;I&#x27;m quite happy with the results, but there are a few limitations (let&#x27;s call it future work):&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Currently there is no correlation between neighboring pixels, which should be present for large &lt;code&gt;σ&lt;&#x2F;code&gt;. Perhaps it could be enough to blur the output based on the &lt;code&gt;σ&lt;&#x2F;code&gt;.&lt;&#x2F;li&gt;
+&lt;li&gt;It&#x27;s increasingly less accurate with large standard deviations (like &lt;code&gt;σ &amp;gt; 0.5&lt;&#x2F;code&gt;). Although for typical strengths there&#x27;s virtually no change in the overall luminance.&lt;&#x2F;li&gt;
+&lt;li&gt;It&#x27;s a bit off from the true Beta Distribution.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;Also, I&#x27;m wondering if it wouldn&#x27;t be better to just calculate the Beta distribution inverse CDF using some numerical method. Though I believe there is something nice about the simplicity of the presented algorithm.&lt;&#x2F;p&gt;
+&lt;p&gt;To get colored grain, you could apply an independent grain to each channel and do some mixing between different seeds to get a &quot;saturation&quot; value. When mixing noise signals, you should compensate for the diminishing &quot;in-between&quot; strength, similar to &lt;a href=&quot;..&#x2F;edge-grain&quot;&gt;this problem&lt;&#x2F;a&gt;. Though I&#x27;m sure there could be much better ways like simulating the actual film layers and filters.&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Vignette Compensation</title>
+        <published>2026-01-05T00:00:00+00:00</published>
+        <updated>2026-01-05T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://www.aeraglyx.com/blog/vignette/"/>
+        <id>https://www.aeraglyx.com/blog/vignette/</id>
+        
+        <content type="html" xml:base="https://www.aeraglyx.com/blog/vignette/">&lt;p&gt;What if you don&#x27;t have a reference vignette plate? No problem! If we know the sensor size and focal length (or at least the rough FOV), we have everything necessary for a decent approximation.&lt;&#x2F;p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;We&#x27;ll be talking about the soft natural vignette here, not the optical or mechanical vignette (where parts of the lens are actually obstructing the view).&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;Natural vignette is given by:&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;v = cos(a)^4&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;Where &lt;code&gt;a&lt;&#x2F;code&gt; is the angle from optical center. To calculate this angle, we first use the normalized screen coordinates &lt;code&gt;x&lt;&#x2F;code&gt; and &lt;code&gt;y&lt;&#x2F;code&gt; to make a radial gradient that goes from 0 in the center to 0.5 at the sides (taking aspect ratio into account):&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;d = (x - 0.5)^2 + ((y - 0.5) * h&#x2F;w)^2&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;If we then multiply this gradient by sensor size, we get a physical distance from the sensor center. We can now imagine a right angle triangle where this distance is the opposite edge, focal length the adjacent edge and &lt;code&gt;a&lt;&#x2F;code&gt; our unknown angle:&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;a = arctan(sensor_size * d &#x2F; focal_length)&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;The units of &lt;code&gt;sensor_size&lt;&#x2F;code&gt; and &lt;code&gt;focal_length&lt;&#x2F;code&gt; cancel out, so if we want to, we can use millimeters for both. This cancellation also means, that we don&#x27;t care about the actual sensor size and focal length, more like the resulting FOV. E.g. if we don&#x27;t know the sensor, but it&#x27;s possible to 3D track the footage, that&#x27;s also enough.&lt;&#x2F;p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Note that this is all assuming a rectilinear projection and falls apart for any fisheye lenses.&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;p&gt;Plug &lt;code&gt;a&lt;&#x2F;code&gt; into the main equation &lt;code&gt;v = cos(a)^4&lt;&#x2F;code&gt;, and we&#x27;re done. To get rid of vignette you would divide the footage by &lt;code&gt;v&lt;&#x2F;code&gt;, to simulate vignette you would multiply by &lt;code&gt;v&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;The footage needs to be linearized for this to work.&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;p&gt;If necessary, the inner &lt;code&gt;a&lt;&#x2F;code&gt; can be multiplied up or down to compensate for any real world inconsistencies.&lt;&#x2F;p&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;Hope this was useful. And please, unless you are dealing with some mechanical vignette, no more blurred ellipses! Although to be fair, anamorphic lenses would produce horizontally stretched vignetting.&lt;&#x2F;p&gt;
+&lt;p&gt;I might make a vignette &lt;code&gt;.fuse&lt;&#x2F;code&gt; someday, but for now here&#x27;s at least a &lt;code&gt;CustomTool&lt;&#x2F;code&gt; for Fusion (just copy-paste into the node tree):&lt;&#x2F;p&gt;
+&lt;pre&gt;&lt;code data-lang=&quot;lua&quot;&gt;{
+    Tools = ordered() {
+        Vignette = Custom {
+            CtrlWZoom = false,
+            Inputs = {
+                NumberIn1 = Input { Value = 50.0, },
+                NumberIn2 = Input { Value = 36.0, },
+                Intermediate1 = Input { Value = &amp;quot;(x-0.5)^2+((y-0.5)*h&#x2F;w)^2&amp;quot;, },
+                Intermediate2 = Input { Value = &amp;quot;atan(n2*i1&#x2F;n1)&amp;quot;, },
+                Intermediate3 = Input { Value = &amp;quot;cos(i2)^4&amp;quot;, },
+                RedExpression = Input { Value = &amp;quot;i3&amp;quot;, },
+                GreenExpression = Input { Value = &amp;quot;i3&amp;quot;, },
+                BlueExpression = Input { Value = &amp;quot;i3&amp;quot;, },
+                AlphaExpression = Input { Value = &amp;quot;1&amp;quot;, },
+                NameforNumber1 = Input { Value = &amp;quot;Focal Length&amp;quot;, },
+                NameforNumber2 = Input { Value = &amp;quot;Sensor Size&amp;quot;, },
+                ShowNumber3 = Input { Value = 0, }, ShowNumber4 = Input { Value = 0, }, ShowNumber5 = Input { Value = 0, }, ShowNumber6 = Input { Value = 0, }, ShowNumber7 = Input { Value = 0, }, ShowNumber8 = Input { Value = 0, },
+                ShowPoint1 = Input { Value = 0, }, ShowPoint2 = Input { Value = 0, }, ShowPoint3 = Input { Value = 0, }, ShowPoint4 = Input { Value = 0, },
+            },
+            ViewInfo = OperatorInfo { Pos = { 0, 0 } },
+        }
+    },
+    ActiveTool = &amp;quot;Vignette&amp;quot;
+}
+&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;blockquote&gt;
+&lt;p&gt;For whatever reasons, Fusion expects degrees instead of radians for trigonometric functions, but since we just pass the angle from &lt;code&gt;atan()&lt;&#x2F;code&gt; to &lt;code&gt;cos()&lt;&#x2F;code&gt;, we don&#x27;t have to worry about it.&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Edge Grain</title>
+        <published>2025-11-11T00:00:00+00:00</published>
+        <updated>2025-11-11T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://www.aeraglyx.com/blog/edge-grain/"/>
+        <id>https://www.aeraglyx.com/blog/edge-grain/</id>
+        
+        <content type="html" xml:base="https://www.aeraglyx.com/blog/edge-grain/">&lt;p&gt;When merging a grain-free element on top of a grainy footage, we match the grain and that&#x27;s it, right? Well not quite, by mixing 2 uncorrelated grains, we get weaker grain in the edges. Let&#x27;s figure out why and how to fix this.&lt;&#x2F;p&gt;
+&lt;p&gt;When we blend multiple noisy signals, the overall noise to signal ratio changes with &lt;code&gt;1 &#x2F; sqrt(n)&lt;&#x2F;code&gt;, so for 2 signals, that is roughly 0.707. More generally, when combining two signals with different noise strengths, the resulting noise is:&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;sqrt(s1 ^ 2 + s2 ^ 2)&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;When linearly interpolating the 2 images, s1 represents the fg alpha, s2 its inverse (the remaining bg grain after the merge). So if we plug in &lt;code&gt;x&lt;&#x2F;code&gt; for s1 (the original alpha), &lt;code&gt;1-x&lt;&#x2F;code&gt; for s2 and plot it, we get a U-curve that showcases the problem.&lt;&#x2F;p&gt;
+&lt;!-- TODO: plot img --&gt;
+&lt;p&gt;But what if we modify &lt;code&gt;x&lt;&#x2F;code&gt; in some way that cancels out the U-curve and gives us a flat response? Let&#x27;s call this modified alpha &lt;code&gt;x&#x27;&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
+&lt;p&gt;If we say that s1 is the desired strength based on the original alpha, s2 the inverted alpha and we set it to 1 (representing constant NSR), we get:&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;1 = sqrt(x&#x27; ^ 2 + (1 - x) ^ 2)&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;Solving for &lt;code&gt;x&#x27;&lt;&#x2F;code&gt;:&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;x&#x27; = sqrt(x * (2 - x))&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;Which is a circle! I just love these kinds of problems.&lt;&#x2F;p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;So in practice, the solution is to add a grain node after the merge, and for the mask use the former function, where &lt;code&gt;x&lt;&#x2F;code&gt; is the fg alpha.&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;!-- TODO:  add before&#x2F;after img--&gt;
+&lt;p&gt;If we want to apply the grain before the premult and merge, we simply divide it by the alpha to get:&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;sqrt(x * (2 - x)) &#x2F; x&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;However, note that this form shoots off to infinity as it approaches &lt;code&gt;x=0&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+</feed>
