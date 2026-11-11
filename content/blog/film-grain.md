@@ -2,6 +2,7 @@
 title = "Film Grain Approximation"
 date = 2026-02-07
 taxonomies.tags = ["vfx", "math"]
+extra.starred = true
 +++
 
 

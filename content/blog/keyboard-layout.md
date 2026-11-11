@@ -2,6 +2,7 @@
 title = "Keyboard Layout Journey"
 date = 2025-11-11
 taxonomies.tags = ["typing", "workflow"]
+extra.starred = true
 +++
 
 
