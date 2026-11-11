@@ -16,17 +16,19 @@
 
 :root {
     color-scheme: dark;
-    --color-deep: #1a1a1a;
-    --color-bg: #202020;
-    --color-bg-2: #282828;
+    --color-deep: #191919;
+    --color-bg: #1f1f1f;
+    --color-bg-2: #292929;
     --color-smol: #383838;
     --color-dim: #525252;
     --color-meh: #8b8b8b;
     --color-fg: #c8c8c8;
-    --color-blue: #96c6dd;
-    --color-purp: #bcb8e2;
+    --color-blue: #a2c3d6;
+    --color-purp: #beb9d9;
+
     --filter-dim: invert(31%) sepia(0%) saturate(433%) hue-rotate(241deg) brightness(95%) contrast(86%);
     --filter-fg: invert(87%) sepia(5%) saturate(24%) hue-rotate(123deg) brightness(92%) contrast(93%);
+
     --transition: 500ms cubic-bezier(0.1, 1.0, 0.1, 1.0);
 }
 
