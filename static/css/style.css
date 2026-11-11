@@ -172,6 +172,14 @@ li > code {
     background-color: var(--color-bg);
 }
 
+.page-list-item.starred::before {
+    content: "★";
+    font-size: 1.6rem;
+    position: absolute;
+    transform: translateX(-2.4rem) translateY(-0.3rem);
+    color: var(--color-blue);
+}
+
 .page-title {
     display: flex;
     justify-content: space-between;

@@ -1,7 +1,7 @@
 {% macro page_list(pages) %}
 <ul class="page-list">
     {% for page in pages %}
-    <li class="page-list-item">
+    <li class="page-list-item{% if page.extra.starred %} starred{% endif %}">
         <div class="page-title">
             <a href="{{ page.permalink | safe }}"{% if page.draft %} class="draft"{% endif %}>
                 {{- page.title -}}
