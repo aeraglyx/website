@@ -1,5 +1,3 @@
-{% import "macros.html" as macros %}
-
 {% extends "base.html" %}
 {% block content %}
 
@@ -9,6 +7,6 @@
     </h1>
 </div>
 
-{{ macros::page_list(pages=section.pages) }}
+{{ <page_list pages={section.pages} /> }}
 
 {% endblock content %}

@@ -1,4 +1,4 @@
-{% macro page_list(pages) %}
+{% component page_list(pages) %}
 <ul class="page-list">
     {% for page in pages %}
     <li class="page-list-item{% if page.extra.starred %} starred{% endif %}">
@@ -16,7 +16,7 @@
             <ul class="tags">
                 {%- for tag in page.taxonomies.tags %}
                 <li>
-                    <a href="{{ get_taxonomy_url(kind="tags", name=tag) }}">
+                    <a href="{{ get_taxonomy_url(kind="tags", term=tag) }}">
                         {{- tag -}}
                     </a>
                 </li>
@@ -27,4 +27,4 @@
     </li>
     {% endfor %}
 </ul>
-{%- endmacro page_list %}
+{%- endcomponent page_list %}
