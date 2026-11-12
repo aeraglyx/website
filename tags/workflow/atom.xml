@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title>Aeraglyx - workflow</title>
+    <subtitle>VFX Artist | Technical Director | Recreational Programmer</subtitle>
+    <link rel="self" type="application/atom+xml" href="https://www.aeraglyx.com/tags/workflow/atom.xml"/>
+    <link rel="alternate" type="text/html" href="https://www.aeraglyx.com"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2025-11-11T00:00:00+00:00</updated>
+    <id>https://www.aeraglyx.com/tags/workflow/atom.xml</id>
+    <entry xml:lang="en">
+        <title>Keyboard Layout Journey</title>
+        <published>2025-11-11T00:00:00+00:00</published>
+        <updated>2025-11-11T00:00:00+00:00</updated>
+        
+        <author>
+          <name>Unknown</name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://www.aeraglyx.com/blog/keyboard-layout/"/>
+        <id>https://www.aeraglyx.com/blog/keyboard-layout/</id>
+        
+        <content type="html" xml:base="https://www.aeraglyx.com/blog/keyboard-layout/">&lt;p&gt;A retrospection on my switch to a modified Gallium alternative keyboard layout for English and Czech typing.&lt;/p&gt;
+&lt;h2 id=&quot;how-i-got-here&quot;&gt;How I Got Here?&lt;/h2&gt;
+&lt;p&gt;A while back, my wrists started hurting, so I got a Microsoft &quot;ergo&quot; keyboard. After a few years of basically no improvement, I got a Moonlander and learned Colemak-DH. I could definitely see the benefits, but the productivity hit was real (especially working in Blender). I tried at least 2 more times, but it was just too much, so I went back to a normie keyboard and QWERTY :(&lt;/p&gt;
+&lt;p&gt;Earlier this year I had a few weeks to spare, so I knew it was the time to do it right.&lt;/p&gt;
+&lt;h2 id=&quot;the-layout&quot;&gt;The Layout&lt;/h2&gt;
+&lt;p&gt;From the earlier attempts, I still had some Colemak muscle memory, so that was the first candidate. However, I knew that newer and better layouts exist, such as Gallium/Graphite, Pine v4 or the various Hands Down variants. Making a custom layout was intriguing as well.&lt;/p&gt;
+&lt;p&gt;My requirements were roughly this - 70% English, 30% Czech, probably more alternating than rolling, and then basically what everyone else would want (low SFBs, low scissors, &quot;comfort&quot;, etc.)&lt;/p&gt;
+&lt;p&gt;So naturally, I wrote my own &lt;a rel=&quot;external&quot; href=&quot;https://github.com/aeraglyx/whelk&quot;&gt;layout generator&lt;/a&gt; - only to abandon it again. Originally I wanted to make a layout without the inner index keys (kinda like engram) but it would be difficult to nail in the first try. I do want to &quot;finish&quot; it someday, however. It&#39;s in Julia (first time trying this language).&lt;/p&gt;
+&lt;p&gt;A Gallium-style layout seemed like a better fit for my requirements than Colemak, so I tried modifying it for better Czech stats. Turns out, someone going by &lt;em&gt;Brys&lt;/em&gt; on the &lt;em&gt;akl&lt;/em&gt; Discord server already made a layout catered towards Czech called &lt;code&gt;corymbia-cz-eng&lt;/code&gt;. Whatever I tried, my version was approaching something similar, so I kinda went with it.&lt;/p&gt;
+&lt;p&gt;The plan was to keep iterating on it, but at this point I was already practicing the homerow on &lt;a rel=&quot;external&quot; href=&quot;https://www.keybr.com/&quot;&gt;keybr&lt;/a&gt;. What gave me some peace of mind was comparing it to Colemak or QWERTY on &lt;a rel=&quot;external&quot; href=&quot;https://cyanophage.github.io/&quot;&gt;cyanophage&lt;/a&gt; using my own generated corpus. &quot;Even if there was something better, it will be a huge win&quot;, I thought. So I stuck with it.&lt;/p&gt;
+&lt;p&gt;Here&#39;s my version of the layout (&lt;a rel=&quot;external&quot; href=&quot;https://github.com/aeraglyx/qmk_userspace/blob/main/keyboards/grooovebob/dasbob/keymaps/aeraglyx/keymap.c&quot;&gt;QMK keymap here&lt;/a&gt;):&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;b l d w x  k p u o y
+n r t s g  f h e a i
+q j m c z  &amp;#39; v , . ?
+     spc    rep
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Main differences compared to regular Graphite/Gallium consist of the &lt;code&gt;ae&lt;/code&gt; column swap, &lt;code&gt;y&lt;/code&gt; on pinky and &lt;code&gt;v&lt;/code&gt; on the right side. One way to look at it is a Gallium base + some Pine v4 elements on the right side.&lt;/p&gt;
+&lt;p&gt;Over half a year later, here are my thoughts:&lt;/p&gt;
+&lt;h3 id=&quot;the-good&quot;&gt;The Good&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Left hand is overall fantastic, &lt;code&gt;nrts&lt;/code&gt; home-row is goated. Interestingly, when I&#39;m focusing on accuracy, I&#39;m mentally more aware of the left hand. Possibly because the load of the left side is more spread out between all the keys.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Alternation. This is of course a personal preference, but I definitely enjoy the rhythmic feel more than Colemak&#39;s rolling.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Most of the QWERTY left-side letters remains on the left side. I work in programs like Blender, which usually means only one hand on the keyboard and a ton of shortcuts, so it&#39;s desirable to keep them on the same side. For example, Blender&#39;s GRS transforms are all on the left-side home-row. For the few important ones on the right side, I have a mirrored layer under one of the thumb keys.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Repeat Key. What a fantastic concept, double letter words are now a joy. This extends to vim shortcuts like &lt;code&gt;dd&lt;/code&gt; as well! I still keep noticing places where I&#39;m not using this enough.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;the-bad&quot;&gt;The Bad&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;In the beginning, &lt;code&gt;b&lt;/code&gt; / &lt;code&gt;y&lt;/code&gt; kinda bothered me, especially in Czech words like &lt;code&gt;kdyby&lt;/code&gt; and &lt;code&gt;bylo&lt;/code&gt;. Now I don&#39;t really mind it. The English &lt;code&gt;yi&lt;/code&gt; also doesn&#39;t bother me as much as I thought it would (probably from all the years of pinky conditioning). However, the trigram &lt;code&gt;you&lt;/code&gt; still feels a bit funky. Worth noting, the kb geometry could help with top row pinkies quite a bit, I believe most boards don&#39;t have these keys enough to the side, which would be a more natural direction...&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;I don&#39;t love how &lt;code&gt;p&lt;/code&gt;, &lt;code&gt;k&lt;/code&gt; and &lt;code&gt;f&lt;/code&gt; interact with the repeat key and vowels. One possible remedy could be to move the &lt;code&gt;x&lt;/code&gt; and &lt;code&gt;&#39;&lt;/code&gt; keys to a layer and physically nudge the inner columns half a key to reduce the distances to &lt;code&gt;k&lt;/code&gt; and &lt;code&gt;z&lt;/code&gt;. Or I could try a different index arrangement, but tbh none of those seem great.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Punctuation could be better, for example typing &lt;code&gt;o&lt;/code&gt; or &lt;code&gt;y&lt;/code&gt; on top row and then &lt;code&gt;.&lt;/code&gt; or &lt;code&gt;?&lt;/code&gt; on bottom row. Makes me wonder if the &lt;em&gt;Hands Down&lt;/em&gt; solution could work better, but fixing the overloaded pinky in Czech seemed hard.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Sometimes I&#39;m conscious of how the pinky side mostly reaches out, while the index side curls in, creating a subtle discrepancy.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;But just to be clear, it&#39;s easy to point out all the subtleties of a new layout and forget how much better it is compared to QWERTY.&lt;/p&gt;
+&lt;h3 id=&quot;the-unknown&quot;&gt;The Unknown&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Why not a thumb alpha layout? At one point I was experimenting with a &lt;code&gt;y&lt;/code&gt; thumb, which felt decent, but a bit wasted. Using a more typical letter like &lt;code&gt;r&lt;/code&gt; would require some more involved changes (skill issue), and I&#39;d rather keep &lt;code&gt;r&lt;/code&gt; on the left side (with space on the left side, that is the law). Having a Repeat Key in that convenient position makes me a bit less sad about the missed opportunities.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Magic Keys? Skill issue. Maybe I&#39;ll look into it some day, but for now I&#39;m quite satisfied with the Repeat Key alone.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Was the &lt;code&gt;ae&lt;/code&gt; column swap necessary? What if I could fix &lt;code&gt;y&lt;/code&gt; some other way? (&lt;code&gt;y&lt;/code&gt; on the left index had its own problems though)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;It&#39;s top heavy. Which seems to be a standard among alt layouts, but is that a good idea? In theory, curling might be a bit more natural?&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Svalboard - while pretty expensive at the moment, it could be the future. What if the current layouts end up being suboptimal on this form factor? Here&#39;s &lt;a rel=&quot;external&quot; href=&quot;https://www.youtube.com/watch?v=-Lz_FNoYHNM&quot;&gt;Ben Vallack&#39;s video&lt;/a&gt; about it.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;fun-facts&quot;&gt;Fun Facts&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;The bottom row features &lt;code&gt;cz&lt;/code&gt;, which is quite fitting 🇨🇿&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;heavy&lt;/code&gt; is a &quot;heavy&quot; one-handed word on this layout :)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&quot;learning&quot;&gt;Learning&lt;/h2&gt;
+&lt;p&gt;I wish I tracked my progress better. Started on &lt;a rel=&quot;external&quot; href=&quot;https://www.keybr.com/&quot;&gt;keybr&lt;/a&gt; to engrain the main letters to my brain, but soon I transitioned to &lt;a rel=&quot;external&quot; href=&quot;https://monkeytype.com/&quot;&gt;monkeytype&lt;/a&gt; (I already knew most of the positions from tweaking the layout). It was hard. 20 WPM, 30.. at 40-50 it was starting to feel like something, at 60 I was like OK, I can kinda type without feeling like a complete fool.&lt;/p&gt;
+&lt;p&gt;It&#39;s mentally taxing for a while though. Sometimes (especially under stress) it didn&#39;t matter I was at a certain WPM on monkeytype - I almost forget how to type for a second, and have to really concentrate.&lt;/p&gt;
+&lt;p&gt;On a QWERTY keyboard, my typing speed was 80+ WPM. At the time of writing, I&#39;m at 70+ WPM on monkeytype quotes. Not sure if it&#39;s something to be ashamed of, but it took me more than half a year to get there.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;It ain&#39;t much but it&#39;s honest work.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;The obvious goal is to match my old speed but with less pain.&lt;/p&gt;
+&lt;p&gt;Also, note that the learning process itself &lt;em&gt;can&lt;/em&gt; be physically painful. Of course the end goal is a more comfortable, pain-free typing, but to get there, you have to put in the hours, which can put a toll on your hands. Mentioning just in case you are switching solely because of pain - take it easy, and be prepared it will take some time (probably months). If you are in a lot of pain, maybe look into lighter switches etc. first.&lt;/p&gt;
+&lt;h2 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h2&gt;
+&lt;p&gt;I&#39;m glad I switched. Typing is now really creamy and it&#39;s a decision from which I&#39;ll benefit my entire life. If you are looking into a Gallium-style layout, I can recommend it. Most of the small issues I encountered had something to do with the Czech adjustments, and even then, it seems to perform quite well in both languages.&lt;/p&gt;
+&lt;p&gt;Thanks Brys and the AKL community for pushing this niche research forward and thank you for reading my 1st blog post!&lt;/p&gt;
+&lt;p&gt;And remember, QWERTY bad! 🟡&lt;/p&gt;
+&lt;h2 id=&quot;useful-links&quot;&gt;Useful Links&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a rel=&quot;external&quot; href=&quot;https://cyanophage.github.io/&quot;&gt;cyanophage.github.io&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a rel=&quot;external&quot; href=&quot;https://docs.google.com/document/d/1W0jhfqJI2ueJ2FNseR4YAFpNfsUM-_FlREHbpNGmC2o&quot;&gt;the layout doc v3&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a rel=&quot;external&quot; href=&quot;https://monkeytype.com/&quot;&gt;monkeytype.com&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a rel=&quot;external&quot; href=&quot;https://www.keybr.com/&quot;&gt;keybr.com&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a rel=&quot;external&quot; href=&quot;https://getreuer.info/posts/keyboards/alt-layouts/index.html&quot;&gt;getreuer.info&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</content>
+        
+    </entry>
+</feed>
